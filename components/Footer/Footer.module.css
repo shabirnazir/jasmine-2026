@@ -1,0 +1,23 @@
+.root {
+  width: 100%;
+  margin-top: 2rem;
+  border-top: 1px solid #dbe5ef;
+  background: #ffffff;
+  color: #334155;
+}
+
+.inner {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.88rem;
+}
+
+.brand {
+  font-weight: 800;
+  color: #0f172a;
+}

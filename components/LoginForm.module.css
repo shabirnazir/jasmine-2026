@@ -1,0 +1,168 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin-top: 1rem;
+  /* height: 100vh; */
+}
+.heading {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+.submit {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  background-color: #c2410c;
+  color: #fff;
+  padding: 0.5rem 1rem;
+}
+.submit:hover {
+  background-color: #fff;
+  color: #c2410c;
+  border: 1px solid #c2410c;
+}
+.button {
+  margin-top: 0rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  background-color: #c2410c;
+  color: #fff;
+  padding: 0.4rem 1rem;
+}
+.button:hover {
+  background-color: #fff;
+  color: #c2410c;
+  border: 1px solid #c2410c;
+}
+.label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+.error {
+  color: red;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.form {
+  border: 1px solid #ccc;
+  padding: 5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  @media (min-width: 768px) {
+    width: 50%;
+  }
+}
+.message {
+  border: 1px solid #9cf99c;
+  background-color: #9cf99c;
+  padding: 0.5rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  padding-left: 0.25rem;
+  color: #c2410c;
+}
+.search {
+  width: 100%;
+  /* width: 80%; */
+}
+.dataContainer {
+  /* margin-top: 3rem; */
+}
+.distributorInfo {
+  display: flex;
+  justify-content: space-between;
+}
+.distributorName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.number {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.tableContainer {
+  max-width: 90vw;
+  overflow-x: scroll;
+}
+.table {
+  border-collapse: collapse;
+  width: 90vw;
+  border: 1.5px solid black;
+}
+.table td,
+.table th {
+  border: 1px solid black;
+  padding: 8px;
+  text-align: center;
+}
+.table th {
+  border: 1.5px solid black;
+}
+.table tr:nth-child(even) {
+  background-color: #f2f2f2;
+  text-align: center;
+}
+
+.table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: white;
+  color: black;
+}
+.viewContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 90vw;
+  gap: 1rem;
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+.paid {
+  font-weight: 600;
+}
+.deleteContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1rem;
+}
+.deleteButton {
+  background-color: #fff;
+  color: #c2410c;
+  border: 1px solid #c2410c;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.deleteButton:hover {
+  background-color: #c2410c;
+  color: #fff;
+}

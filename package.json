@@ -1,0 +1,41 @@
+{
+  "name": "authapp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "add": "^2.0.6",
+    "autoprefixer": "10.4.14",
+    "bcryptjs": "^2.4.3",
+    "bootstrap": "^5.3.2",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.2",
+    "moment": "^2.29.4",
+    "mongoose": "^7.4.1",
+    "next": "^16.2.2",
+    "next-auth": "^4.24.13",
+    "pdf-lib": "^1.17.1",
+    "postcss": "8.4.27",
+    "react": "18.2.0",
+    "react-bootstrap": "^2.9.1",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.48.2",
+    "react-icons": "^4.12.0",
+    "react-intl": "^6.5.4",
+    "react-loading-icons": "^1.1.0",
+    "react-modal": "^3.16.1",
+    "react-select": "^5.8.0",
+    "react-to-print": "^3.3.0",
+    "reactjs-popup": "^2.0.6",
+    "tailwindcss": "3.3.3",
+    "yarn": "^1.22.21"
+  },
+  "devDependencies": {
+    "sort-package-json": "^2.6.0"
+  }
+}

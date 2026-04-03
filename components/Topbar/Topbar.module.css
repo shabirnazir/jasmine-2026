@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: all 0.5s ease;
+
+  background: #f5f5f5;
+}
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  margin-right: 10px;
+  color: #c2410c;
+  text-transform: uppercase;
+}
+.icon {
+  margin-top: 0.25rem;
+  margin-right: 0.15rem;
+}
+.link {
+  display: flex;
+  text-decoration: none;
+  cursor: pointer;
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 10px;
+  transition: all 0.3s ease;
+}
+.link:hover {
+  color: #c2410c;
+}
+.subContainer {
+  display: flex;
+}
+.userContainer {
+  display: flex;
+}
+.user {
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 10px;
+  padding: 5px 10px;
+
+  border-radius: 5px;
+}
+.user::before {
+  content: "👤";
+  margin-right: 5px;
+}
+.logout {
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 10px;
+  cursor: pointer;
+  border: 1px solid #000;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+.logout:hover {
+  background-color: #c2410c; /* Change the background color on hover */
+  color: #fff; /* Change the text color on hover */
+}
+.option {
+  display: flex;
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 10px;
+  padding: 5px 0px;
+  color: #334155;
+  border-bottom: 2px solid lightgrey;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.option:hover {
+  color: #c2410c;
+}

@@ -1,0 +1,114 @@
+.root {
+  min-height: calc(100vh - 70px);
+  padding: 1.2rem;
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgba(14, 165, 233, 0.2),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(245, 158, 11, 0.15),
+      transparent 25%
+    ),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.container {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+}
+
+.banner {
+  margin-bottom: 1rem;
+  padding: 1.3rem 1.25rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  border: 1px solid #dbe5ef;
+  box-shadow: 0 20px 30px rgba(15, 23, 42, 0.08);
+}
+
+.bannerTitle {
+  margin: 0;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.bannerSub {
+  margin: 0.35rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.mainContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.card {
+  border: 1px solid #dbe5ef;
+  border-radius: 1rem;
+  background: #ffffff;
+  padding: 1rem;
+  box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
+}
+
+.cardTitle {
+  margin: 0 0 0.7rem;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cardLinks {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+}
+
+.quickLink {
+  display: block;
+  border-radius: 0.7rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 0.65rem 0.75rem;
+  color: #1e293b;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.quickLink:hover {
+  background: #e0f2fe;
+  color: #0c4a6e;
+  transform: translateY(-1px);
+}
+
+.distributorContainer {
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #0f172a;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+}
+
+@media (min-width: 768px) {
+  .root {
+    padding: 1.6rem 2rem 2.2rem;
+  }
+
+  .mainContainer {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardLinks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
