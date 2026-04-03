@@ -1,6 +1,5 @@
 import { authOptions } from "@/lib/authOptions";
-import AddDistributor from "@/components/Distributor/AddDistributor";
-import Payment from "@/components/Distributor/Payment";
+import ViewCustomer from "@/components/Customer/ViewCustomer";
 import Topbar from "@/components/Topbar/Topbar";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -13,7 +12,7 @@ export default async function page() {
     <>
       <Topbar />
       <div className="m-5">
-        <Payment />
+        <ViewCustomer />
       </div>
     </>
   );

@@ -1,6 +1,6 @@
 import { authOptions } from "@/lib/authOptions";
+import Payment from "@/components/Customer/Payment";
 import AddDistributor from "@/components/Distributor/AddDistributor";
-import Payment from "@/components/Distributor/Payment";
 import Topbar from "@/components/Topbar/Topbar";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";

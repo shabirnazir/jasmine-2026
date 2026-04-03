@@ -1,4 +1,5 @@
 import { authOptions } from "@/lib/authOptions";
+import Delete from "@/components/Customer/Delete";
 import AddDistributor from "@/components/Distributor/AddDistributor";
 import Payment from "@/components/Distributor/Payment";
 import Topbar from "@/components/Topbar/Topbar";
@@ -13,7 +14,7 @@ export default async function page() {
     <>
       <Topbar />
       <div className="m-5">
-        <Payment />
+        <Delete />
       </div>
     </>
   );

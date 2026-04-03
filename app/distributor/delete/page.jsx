@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import AddDistributor from "@/components/Distributor/AddDistributor";
 import Delete from "@/components/Distributor/Delete";
 import Payment from "@/components/Distributor/Payment";
