@@ -126,9 +126,9 @@ const DataTable = (props) => {
     const message = [
       "*Jasmine Enterprises*",
       "----------------------",
-      `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Total Bags:* _${totalBags || 0}_`,
+      `*Date:* ${moment().format("DD-MMMM-YYYY")}``*Total Bags:* _${totalBags || 0}_`,
       `*Total Balance:* _${currentBalance || 0}_`,
+      "----------------------",
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
       "*For any query, please contact 6006034726.*",
@@ -353,13 +353,13 @@ const DataTable = (props) => {
               >
                 Normal Message
               </button>
-              <button
+              {/* <button
                 type="button"
                 className={css.modalShare}
                 onClick={handleSendPdf}
               >
                 PDF
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

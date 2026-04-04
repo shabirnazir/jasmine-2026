@@ -93,7 +93,10 @@ const SaleCement = (props) => {
     const bagCount = Number(value || 0);
     return `${getFormattedAmount(bagCount)} bag${bagCount === 1 ? "" : "s"}`;
   };
-
+  const formattedDate = (dateString) => {
+    const options = { day: "2-digit", month: "long", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
   const buildWhatsAppMessage = ({
     transactionTypeValue,
     cementLabel,
@@ -106,12 +109,13 @@ const SaleCement = (props) => {
   }) => {
     if (transactionTypeValue === "discount") {
       return [
-        "*🌿 Jasmine Enterprises*",
+        "*Jasmine Enterprises*",
         "----------------------",
-        `*Date:* _${date}_`,
+        `*Date:* _${formattedDate(date)}_`,
         `_We would like to inform you that a discount of *${getFormattedAmount(amount)}* has been applied to your account._`,
+        "-----------------------",
         `*Total Balance:* _${getFormattedAmount(balance)}_`,
-        "",
+        "----------------------",
         "_Thank you for your continued support and trust in us._",
         "_This is an automatically generated message._",
         "*For any queries, please contact:* _6006034726_",
@@ -121,22 +125,23 @@ const SaleCement = (props) => {
     const total = Number(price || 0) * Number(bags || 0) + Number(fair || 0);
     const actionLine =
       transactionTypeValue === "return"
-        ? `_We have received your return of *${getBagLabel(bags)}* of _${cementLabel}_ cement._`
-        : `_Thank you for purchasing *${getBagLabel(bags)}* of _${cementLabel}_ cement from us._`;
+        ? `_We have received your return of *${getBagLabel(bags)}* of ${cementLabel} cement._`
+        : `_Thank you for purchasing *${getBagLabel(bags)}* of ${cementLabel} cement from us._`;
     const totalLabel =
       transactionTypeValue === "return" ? "*Return Amount:*" : "*Total:*";
 
     return [
-      "*🌿 Jasmine Enterprises*",
+      "*Jasmine Enterprises*",
       "----------------------",
-      `*Date:* _${date}_`,
+      `*Date:* _${formattedDate(date)}_`,
       actionLine,
       "",
       `*Price per bag:* _${getFormattedAmount(price)}_`,
       `*Fare Charges:* _${getFormattedAmount(fair)}_`,
       `${totalLabel} _${getFormattedAmount(total)}_`,
+      "-----------------------",
       `*Total Balance:* _${getFormattedAmount(balance)}_`,
-      "",
+      "----------------------",
       "_We sincerely appreciate your business with us._",
       "_This is an automatically generated message._",
       "*For any queries, please contact:* _6006034726_",
