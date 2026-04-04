@@ -137,7 +137,7 @@ const SaleCement = (props) => {
       actionLine,
       "",
       `*Price per bag:* _${getFormattedAmount(price)}_`,
-      `*Fare Charges:* _${getFormattedAmount(fair)}_`,
+      fair ? `*Fare Charges:* _${getFormattedAmount(fair)}_` : "",
       `${totalLabel} _${getFormattedAmount(total)}_`,
       "-----------------------",
       `*Total Balance:* _${getFormattedAmount(balance)}_`,
