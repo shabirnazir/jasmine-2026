@@ -131,6 +131,10 @@ const Payment = (props) => {
     });
 
     const json = await res.json();
+    const balanceMessage =
+      json.balance < 0
+        ? `*Advance:* _${getFormattedAmount(json.balance || 0)}_`
+        : `*Balance:* _${getFormattedAmount(json.balance || 0)}_`;
     if (res.ok) {
       setMessage(json.message);
 
@@ -142,8 +146,9 @@ const Payment = (props) => {
           `*Date:* _${formattedDate(data.date)}_`,
           `We have received your payment of _${getFormattedAmount(data.amount)}rs_ towards your outstanding balance.`,
           "------Breakdown-------",
-          `*Paid Amount:* _${getFormattedAmount(data.amount)}_`,
-          `*Balance:* _${getFormattedAmount(json.balance || 0)}_`,
+          `*Balance Before Payment:* _${getFormattedAmount(balance || 0)}_`,
+          `*Paid Amount:* -  _${getFormattedAmount(data.amount)}_`,
+          balanceMessage,
           "----------------------",
           "_Thank you for your payment. We truly value your continued business._",
           "_This is an automatically generated message._",
