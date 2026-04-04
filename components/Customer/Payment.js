@@ -40,7 +40,27 @@ const Payment = (props) => {
     })();
   }, []);
 
-  const getSanitizedPhone = (phone) => String(phone || "").replace(/\D/g, "");
+  const getSanitizedPhone = (phone) => {
+    const digitsOnly = String(phone || "").replace(/\D/g, "");
+
+    if (!digitsOnly) {
+      return null;
+    }
+
+    const withoutIntlPrefix = digitsOnly.startsWith("00")
+      ? digitsOnly.slice(2)
+      : digitsOnly;
+    const normalizedPhone =
+      withoutIntlPrefix.length === 10
+        ? `91${withoutIntlPrefix}`
+        : withoutIntlPrefix;
+
+    if (normalizedPhone.length < 10 || normalizedPhone.length > 15) {
+      return null;
+    }
+
+    return normalizedPhone;
+  };
 
   const getFormattedAmount = (value) => Number(value || 0).toLocaleString();
 
@@ -55,7 +75,9 @@ const Payment = (props) => {
     const sanitizedPhone = getSanitizedPhone(whatsAppNumber);
 
     if (!sanitizedPhone) {
-      setWhatsAppError("Please enter a valid WhatsApp number.");
+      setWhatsAppError(
+        "Please enter a valid WhatsApp number with country code.",
+      );
       return;
     }
 

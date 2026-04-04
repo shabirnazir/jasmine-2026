@@ -43,9 +43,27 @@ const DataTable = (props) => {
   };
 
   const getSanitizedPhone = () => {
-    const sanitizedPhone = whatsAppNumber.replace(/\D/g, "");
-    if (!sanitizedPhone) {
-      setWhatsAppError("Please enter a valid WhatsApp number.");
+    const digitsOnly = String(whatsAppNumber || "").replace(/\D/g, "");
+
+    if (!digitsOnly) {
+      setWhatsAppError(
+        "Please enter a valid WhatsApp number with country code.",
+      );
+      return null;
+    }
+
+    const withoutIntlPrefix = digitsOnly.startsWith("00")
+      ? digitsOnly.slice(2)
+      : digitsOnly;
+    const sanitizedPhone =
+      withoutIntlPrefix.length === 10
+        ? `91${withoutIntlPrefix}`
+        : withoutIntlPrefix;
+
+    if (sanitizedPhone.length < 10 || sanitizedPhone.length > 15) {
+      setWhatsAppError(
+        "Please enter a valid WhatsApp number with country code.",
+      );
       return null;
     }
 

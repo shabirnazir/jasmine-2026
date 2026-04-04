@@ -15,10 +15,11 @@ const selectStyles = {
     border: state.isFocused ? "2px solid #0ea5e9" : "1.5px solid #cbd5e1",
     boxShadow: state.isFocused ? "0 0 0 3px rgba(14,165,233,0.15)" : "none",
     minHeight: "44px",
-    fontSize: "0.92rem",
+    fontSize: "1rem",
     background: "#ffffff",
     "&:hover": { borderColor: "#94a3b8" },
   }),
+  input: (base) => ({ ...base, fontSize: "1rem" }),
   placeholder: (base) => ({ ...base, color: "#94a3b8" }),
   singleValue: (base) => ({ ...base, color: "#0f172a", fontWeight: 600 }),
   multiValue: (base) => ({
