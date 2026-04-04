@@ -109,44 +109,63 @@ const SaleCement = (props) => {
   }) => {
     if (transactionTypeValue === "discount") {
       return [
-        "*Jasmine Enterprises*",
-        "----------------------",
-        `*Date:* _${formattedDate(date)}_`,
-        `_We would like to inform you that a discount of *${getFormattedAmount(amount)}* has been applied to your account._`,
-        "-----------------------",
-        `*Balance:* _${getFormattedAmount(balance)}_`,
-        "----------------------",
-        "_Thank you for your continued support and trust in us._",
-        "_This is an automatically generated message._",
-        "*For any queries, please contact:* _6006034726_",
+        "*🏢 JASMINE ENTERPRISES*",
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        `📅 *Date:* _${formattedDate(date)}_`,
+        "🏷️ *Discount Applied*",
+        `A discount of *${getFormattedAmount(amount)}* has been applied to your account.`,
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "📊 *Account Summary*",
+        `💰 *Updated Balance:* *${getFormattedAmount(balance)}*`,
+        "",
+        "━━━━━━━━━━━━━━━━━━",
+        "🌟 _Thank you for your continued support and trust in us!_",
+        "🤖 _This is an automatically generated message._",
+        "",
+        "📞 *Support:* _6006034726_",
       ].join("\n");
     }
 
     const total = Number(price || 0) * Number(bags || 0) + Number(fair || 0);
     const actionLine =
       transactionTypeValue === "return"
-        ? `_We have received your return of *${getBagLabel(bags)}* of ${cementLabel} cement._`
-        : `_Thank you for purchasing *${getBagLabel(bags)}* of ${cementLabel} cement from us._`;
+        ? `📥 *Return Received* \nWe have received your return of *${getBagLabel(bags)}* of ${cementLabel} cement.`
+        : `🛒 *Purchase Confirmed* \nThank you for purchasing *${getBagLabel(bags)}* of ${cementLabel} cement from us.`;
+
     const totalLabel =
-      transactionTypeValue === "return" ? "*Return Amount:*" : "*Total:*";
+      transactionTypeValue === "return"
+        ? "💸 *Return Amount:*"
+        : "💰 *Total Amount:*";
 
     return [
-      "*Jasmine Enterprises*",
-      "----------------------",
-      `*Date:* _${formattedDate(date)}_`,
+      "*🏢 JASMINE ENTERPRISES*",
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      `📅 *Date:* _${formattedDate(date)}_`,
+      "",
       actionLine,
-      "------Breakdown-------",
-      fair ? `*Fare Charges:* _${getFormattedAmount(fair)}_` : null,
-      `*Price:* _${getFormattedAmount(price)}_`,
-      `*Number of Bags:* _${getFormattedAmount(bags)}_`,
-      `${totalLabel} _${getFormattedAmount(total)}_`,
-      "-----------------------",
-      `*Balance:* _${getFormattedAmount(balance)}_`,
-      "----------------------",
-      "_We sincerely appreciate your business with us._",
-      "_This is an automatically generated message._",
-      "*For any queries, please contact:* _6006034726_",
-    ].join("\n");
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      "📦 *Transaction Breakdown*",
+      fair ? `🚚 *Fare Charges:* _${getFormattedAmount(fair)}_` : null,
+      `💵 *Price:* _${getFormattedAmount(price)}_`,
+      `📦 *Quantity:* _${getBagLabel(bags)}_`,
+      `${totalLabel} *${getFormattedAmount(total)}*`,
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      "📊 *Account Summary*",
+      `💰 *Balance:* *${getFormattedAmount(balance)}*`,
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      "🛍️ _We sincerely appreciate your business with us!_",
+      "🤖 _This is an automatically generated message._",
+      "",
+      "📞 *Support:* _6006034726_",
+    ]
+      .filter(Boolean) // removes null if fare not present
+      .join("\n");
   };
 
   const closeWhatsAppModal = () => {

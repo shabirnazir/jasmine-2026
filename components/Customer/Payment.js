@@ -131,28 +131,35 @@ const Payment = (props) => {
     });
 
     const json = await res.json();
-    const balanceMessage =
-      json.balance < 0
-        ? `*Advance:* _${getFormattedAmount(json.balance || 0)}_`
-        : `*Balance:* _${getFormattedAmount(json.balance || 0)}_`;
+
     if (res.ok) {
       setMessage(json.message);
 
       if (sendWhatsApp) {
         const customerName = `${distributor.data.firstName} ${distributor.data.lastName}`;
+        const balanceMessage =
+          json.balance < 0
+            ? `💳 *Advance:* *${getFormattedAmount(json.balance || 0)}*`
+            : `💰 *Balance:* *${getFormattedAmount(json.balance || 0)}*`;
         const nextWhatsAppMessage = [
-          "*Jasmine Enterprises*",
-          "----------------------",
-          `*Date:* _${formattedDate(data.date)}_`,
-          `We have received your payment of _${getFormattedAmount(data.amount)}rs_ towards your outstanding balance.`,
-          "------Breakdown-------",
-          `*Balance Before Payment:* _${getFormattedAmount(balance || 0)}_`,
-          `*Paid Amount:* -  _${getFormattedAmount(data.amount)}_`,
+          "*🏢 JASMINE ENTERPRISES*",
+          "",
+          "━━━━━━━━━━━━━━━━━━",
+          `📅 *Date:* _${formattedDate(data.date)}_`,
+          "💵 *Payment Received*",
+          `We have received *${getFormattedAmount(data.amount)}* towards your outstanding balance.`,
+          "",
+          "━━━━━━━━━━━━━━━━━━",
+          "📊 *Payment Breakdown*",
+          `📉 *Before Payment:* _${getFormattedAmount(balance || 0)}_`,
+          `➖ *Paid Amount:* _${getFormattedAmount(data.amount)}_`,
           balanceMessage,
-          "----------------------",
-          "_Thank you for your payment. We truly value your continued business._",
-          "_This is an automatically generated message._",
-          "*For any queries, please contact:* _6006034726_",
+          "",
+          "━━━━━━━━━━━━━━━━━━",
+          "🛍️ _Thank you for your payment. We truly value your business!_",
+          "🤖 _This is an automatically generated message._",
+          "",
+          "📞 *Support:* _6006034726_",
         ].join("\n");
 
         setWhatsAppMessage(nextWhatsAppMessage);

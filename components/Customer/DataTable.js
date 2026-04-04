@@ -123,18 +123,37 @@ const DataTable = (props) => {
   };
 
   const handleSendMessage = () => {
+    // const message = [
+    //   "*Jasmine Enterprises*",
+    //   "----------------------",
+    //   `*Date:* ${moment().format("DD-MMMM-YYYY")}`,
+    //   "_Here is a summary of your account details:_",
+    //   "------Breakdown-------",
+    //   `*Total No of Bags:* _${totalBags || 0}_`,
+    //   `*Balance:* _${currentBalance || 0}_`,
+    //   "----------------------",
+    //   "_Thank you for shopping with us._",
+    //   "_This is an automatically generated message._",
+    //   "*For any queries, please contact:* _6006034726_",
+    // ].join("\n");
     const message = [
-      "*Jasmine Enterprises*",
-      "----------------------",
-      `*Date:* ${moment().format("DD-MMMM-YYYY")}`,
-      "_Here is a summary of your account details:_",
-      "------Breakdown-------",
-      `*Total No of Bags:* _${totalBags || 0}_`,
-      `*Balance:* _${currentBalance || 0}_`,
-      "----------------------",
-      "_Thank you for shopping with us._",
-      "_This is an automatically generated message._",
-      "*For any queries, please contact:* _6006034726_",
+      "*🏢 JASMINE ENTERPRISES*",
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      `📅 *Date:* _${moment().format("DD-MMMM-YYYY")}_`,
+      "",
+      "📊 *Account Summary*",
+      "_Here is a quick overview of your account:_",
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      `📦 *Total Bags:* *${totalBags || 0}*`,
+      `💰 *Current Balance:* *₹${currentBalance || 0}*`,
+      "",
+      "━━━━━━━━━━━━━━━━━━",
+      "✨ _Thank you for shopping with us!_",
+      "🤖 _This is an automatically generated message._",
+      "",
+      "📞 *Support:* _6006034726_",
     ].join("\n");
 
     openWhatsApp(message);
