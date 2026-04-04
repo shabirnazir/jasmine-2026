@@ -16,6 +16,8 @@ const Payment = (props) => {
   const [message, setMessage] = useState("");
   const [distributors, setDistributors] = useState([]);
   const [distributor, setDistributor] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const [balanceLoading, setBalanceLoading] = useState(false);
 
   useEffect(() => {
     //iffi function
@@ -34,6 +36,24 @@ const Payment = (props) => {
       setLoading(false);
     })();
   }, []);
+
+  const getFormattedAmount = (value) => Number(value || 0).toLocaleString();
+
+  const fetchBalance = async (distributorId) => {
+    try {
+      setBalanceLoading(true);
+      const res = await fetch(`/api/balance?customerId=${distributorId}`);
+      const json = await res.json();
+      if (res.ok) {
+        setBalance(json.balance);
+      }
+    } catch (err) {
+      console.log("Error fetching balance:", err);
+      setBalance(null);
+    } finally {
+      setBalanceLoading(false);
+    }
+  };
   const onSubmit = async (data) => {
     setLoading(true);
     const res = await fetch("/api/payment_distributor", {
@@ -68,24 +88,48 @@ const Payment = (props) => {
           <Select
             className={css.search}
             required
-            placeholder="Select Cement"
+            placeholder="Select Distributor"
             options={distributors}
             value={distributor}
             onChange={(selectedOption) => {
               setDistributor(selectedOption);
+              if (selectedOption) {
+                fetchBalance(selectedOption.value);
+              } else {
+                setBalance(null);
+              }
             }}
           />
+          {distributor && (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "8px 12px",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "4px",
+              }}
+            >
+              <strong>Current Balance: </strong>
+              {balanceLoading ? (
+                <span>Loading...</span>
+              ) : (
+                <span style={{ color: balance > 0 ? "#e74c3c" : "#27ae60" }}>
+                  ₹{getFormattedAmount(balance || 0)}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* {errors.cement && (
             <p className={css.error}>Type of cement is required.</p>
           )} */}
         </div>
         <div className={css.container}>
-          <label className={css.label}>date</label>
+          <label className={css.label}>Date</label>
           <input
             {...register("date", { required: true })}
             className={css.dateInput}
-            placeholder="Enter Amount"
+            placeholder="Enter Date"
             type="date"
           />
           {errors.date && <p className={css.error}>Date is Required</p>}

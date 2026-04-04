@@ -109,26 +109,81 @@ const Delete = (props) => {
       {message && <p className={css.message}>{message}</p>}
       {error && <p className={css.error}>{error}</p>}
       <br />
-      <table className={css.table}>
-        <thead className={css.tableHeading}>
-          <tr className={css.tableRow}>
-            <th>S No.</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Mobile</th>
-            <th>Address</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {distributors?.map((distributor, index) => (
-            <tr key={index} className={css.tableRow}>
-              <td>{index + 1}</td>
-              <td>{distributor.data.firstName}</td>
-              <td>{distributor.data.lastName}</td>
-              <td>{distributor.data.phone}</td>
-              <td>{distributor.data.address}</td>
-              <td>
+      <div className={`${css.tableContainer} ${css.desktopTable}`}>
+        <table className={css.table}>
+          <thead className={css.tableHeading}>
+            <tr className={css.tableRow}>
+              <th>S No.</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Mobile</th>
+              <th>Address</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {distributors?.map((distributor, index) => (
+              <tr key={index} className={css.tableRow}>
+                <td>{index + 1}</td>
+                <td>{distributor.data.firstName}</td>
+                <td>{distributor.data.lastName}</td>
+                <td>{distributor.data.phone}</td>
+                <td>{distributor.data.address}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={css.editButton}
+                    onClick={() => handleEditDistributor(distributor)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    className={css.deleteButton}
+                    onClick={() => setDistributorToDelete(distributor)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className={css.mobileCards}>
+        {distributors?.map((distributor, index) => (
+          <article className={css.tableCard} key={distributor.value}>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>S No.</span>
+              <span className={css.tableCardValue}>{index + 1}</span>
+            </div>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>First Name</span>
+              <span className={css.tableCardValue}>
+                {distributor.data.firstName}
+              </span>
+            </div>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>Last Name</span>
+              <span className={css.tableCardValue}>
+                {distributor.data.lastName}
+              </span>
+            </div>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>Mobile</span>
+              <span className={css.tableCardValue}>
+                {distributor.data.phone}
+              </span>
+            </div>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>Address</span>
+              <span className={css.tableCardValue}>
+                {distributor.data.address}
+              </span>
+            </div>
+            <div className={css.tableCardRow}>
+              <span className={css.tableCardLabel}>Action</span>
+              <span className={css.tableCardValue}>
                 <button
                   type="button"
                   className={css.editButton}
@@ -143,11 +198,11 @@ const Delete = (props) => {
                 >
                   Delete
                 </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
 
       {distributorToDelete ? (
         <div className={css.modalOverlay}>
@@ -180,8 +235,11 @@ const Delete = (props) => {
       {distributorToEdit ? (
         <div className={css.modalOverlay}>
           <div className={css.modalCard}>
-            <h3 className={css.modalTitle}>Edit Distributor</h3>
-            <div className={css.editFormContainer}>
+            <h3 className={css.modalTitle}>Edit Distributors</h3>
+            <div
+              className={css.editFormContainer}
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
               <div className={css.editFormField}>
                 <label className={css.modalLabel}>First Name</label>
                 <input

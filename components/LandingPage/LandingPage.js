@@ -19,7 +19,7 @@ const LandingPage = () => {
         { label: "Add Customer", href: "/customer/add" },
         { label: "View Journal", href: "/customer/viewCustomer" },
         { label: "Customer Payment", href: "/customer/payment" },
-        { label: "Delete Customer", href: "/customer/delete" },
+        { label: "Customers", href: "/customer/delete" },
       ],
     },
     {
@@ -30,7 +30,7 @@ const LandingPage = () => {
         { label: "Add Distributor", href: "/distributor/add" },
         { label: "View Journal", href: "/distributor/viewdistributor" },
         { label: "Distributor Payment", href: "/distributor/payment" },
-        { label: "Delete Distributor", href: "/distributor/delete" },
+        { label: "Distributors", href: "/distributor/delete" },
       ],
     },
     {

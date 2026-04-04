@@ -29,7 +29,7 @@ const Topbar = (props) => {
         { label: "Add Distributor", href: "/distributor/add" },
         { label: "View Journal", href: "/distributor/viewdistributor" },
         { label: "Payment", href: "/distributor/payment" },
-        { label: "Delete Distributor", href: "/distributor/delete" },
+        { label: "Distributors", href: "/distributor/delete" },
       ],
     },
     {
@@ -40,7 +40,7 @@ const Topbar = (props) => {
         { label: "Add Customer", href: "/customer/add" },
         { label: "View Journal", href: "/customer/viewCustomer" },
         { label: "Payment", href: "/customer/payment" },
-        { label: "Delete Customer", href: "/customer/delete" },
+        { label: "Customers", href: "/customer/delete" },
       ],
     },
     {

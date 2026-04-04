@@ -16,6 +16,8 @@ const Payment = (props) => {
   const [message, setMessage] = useState("");
   const [distributors, setDistributors] = useState([]);
   const [distributor, setDistributor] = useState(null);
+  const [balance, setBalance] = useState(null);
+  const [balanceLoading, setBalanceLoading] = useState(false);
   const [sendWhatsApp, setSendWhatsApp] = useState(true);
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState("");
@@ -89,7 +91,26 @@ const Payment = (props) => {
 
     closeWhatsAppModal();
   };
+  const formattedDate = (dateString) => {
+    const options = { day: "2-digit", month: "long", year: "numeric" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
 
+  const fetchBalance = async (customerId) => {
+    try {
+      setBalanceLoading(true);
+      const res = await fetch(`/api/balance?customerId=${customerId}`);
+      const json = await res.json();
+      if (res.ok) {
+        setBalance(json.balance);
+      }
+    } catch (err) {
+      console.log("Error fetching balance:", err);
+      setBalance(null);
+    } finally {
+      setBalanceLoading(false);
+    }
+  };
   const onSubmit = async (data) => {
     if (!distributor) {
       setError("Please select customer.");
@@ -119,13 +140,12 @@ const Payment = (props) => {
           "*Jasmine Enterprises*",
           "----------------------",
           `*Date:* _${formattedDate(data.date)}_`,
-          `We have received your payment successfully.`,
-          "-----------------------",
+          `We have received your payment of _${getFormattedAmount(data.amount)}rs_ towards your outstanding balance.`,
+          "------Breakdown-------",
           `*Paid Amount:* _${getFormattedAmount(data.amount)}_`,
-          "-----------------------",
-          `*Total Balance:* _${getFormattedAmount(json.balance || 0)}_`,
+          `*Balance:* _${getFormattedAmount(json.balance || 0)}_`,
           "----------------------",
-          "_We sincerely appreciate your prompt payment._",
+          "_Thank you for your payment. We truly value your continued business._",
           "_This is an automatically generated message._",
           "*For any queries, please contact:* _6006034726_",
         ].join("\n");
@@ -165,8 +185,32 @@ const Payment = (props) => {
             value={distributor}
             onChange={(selectedOption) => {
               setDistributor(selectedOption);
+              if (selectedOption) {
+                fetchBalance(selectedOption.value);
+              } else {
+                setBalance(null);
+              }
             }}
           />
+          {distributor && (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "8px 12px",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "4px",
+              }}
+            >
+              <strong>Current Balance: </strong>
+              {balanceLoading ? (
+                <span>Loading...</span>
+              ) : (
+                <span style={{ color: balance > 0 ? "#e74c3c" : "#27ae60" }}>
+                  ₹{getFormattedAmount(balance || 0)}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* {errors.cement && (
             <p className={css.error}>Type of cement is required.</p>

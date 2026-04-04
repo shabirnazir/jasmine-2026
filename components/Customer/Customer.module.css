@@ -897,6 +897,11 @@
   .mobileCards {
     display: grid;
     gap: 0.65rem;
+    width: 100%;
+  }
+
+  .tableCard {
+    width: 100%;
   }
 
   .pagination {
