@@ -290,13 +290,6 @@ const DataTable = (props) => {
       <div className={css.actionButtons}>
         <button
           type="button"
-          className={css.printButton}
-          onClick={openShareModal}
-        >
-          Send WhatsApp
-        </button>
-        <button
-          type="button"
           className={css.downloadButton}
           onClick={() => downloadPdfFile()}
         >

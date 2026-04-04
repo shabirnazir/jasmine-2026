@@ -106,38 +106,40 @@ const SaleCement = (props) => {
   }) => {
     if (transactionTypeValue === "discount") {
       return [
-        "*Jasmine Enterprises*",
-        `*Date:* ${date}`,
-        `A discount of ${getFormattedAmount(amount)} has been applied to your account.`,
-        `*Discount Amount:* ${getFormattedAmount(amount)}`,
-        `*Total Balance:* ${getFormattedAmount(balance)}`,
-        "Thank you for shopping with us.",
-        "This is an automatically generated message.",
-        "*For any query, please contact 6006034726.*",
+        "*🌿 Jasmine Enterprises*",
+        "----------------------",
+        `*Date:* _${date}_`,
+        `_We would like to inform you that a discount of *${getFormattedAmount(amount)}* has been applied to your account._`,
+        `*Total Balance:* _${getFormattedAmount(balance)}_`,
+        "",
+        "_Thank you for your continued support and trust in us._",
+        "_This is an automatically generated message._",
+        "*For any queries, please contact:* _6006034726_",
       ].join("\n");
     }
 
     const total = Number(price || 0) * Number(bags || 0) + Number(fair || 0);
     const actionLine =
       transactionTypeValue === "return"
-        ? `You have returned ${getBagLabel(bags)} of ${cementLabel}.`
-        : `You have purchased ${getBagLabel(bags)} of ${cementLabel}.`;
+        ? `_We have received your return of *${getBagLabel(bags)}* of _${cementLabel}_ cement._`
+        : `_Thank you for purchasing *${getBagLabel(bags)}* of _${cementLabel}_ cement from us._`;
     const totalLabel =
       transactionTypeValue === "return" ? "*Return Amount:*" : "*Total:*";
 
     return [
-      "*Jasmine Enterprises*",
-      `*Date:* ${date}`,
+      "*🌿 Jasmine Enterprises*",
+      "----------------------",
+      `*Date:* _${date}_`,
       actionLine,
-      `*Cement:* ${cementLabel}`,
-      `*Bags:* ${getFormattedAmount(bags)}`,
-      `*Price:* ${getFormattedAmount(price)}`,
-      `*Fare:* ${getFormattedAmount(fair)}`,
-      `${totalLabel} ${getFormattedAmount(total)}`,
-      `*Total Balance:* ${getFormattedAmount(balance)}`,
-      "Thank you for shopping with us.",
-      "This is an automatically generated message.",
-      "*For any query, please contact 6006034726.*",
+      "",
+      `*Price per bag:* _${getFormattedAmount(price)}_`,
+      `*Fare Charges:* _${getFormattedAmount(fair)}_`,
+      `${totalLabel} _${getFormattedAmount(total)}_`,
+      `*Total Balance:* _${getFormattedAmount(balance)}_`,
+      "",
+      "_We sincerely appreciate your business with us._",
+      "_This is an automatically generated message._",
+      "*For any queries, please contact:* _6006034726_",
     ].join("\n");
   };
 

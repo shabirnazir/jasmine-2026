@@ -125,9 +125,10 @@ const DataTable = (props) => {
   const handleSendMessage = () => {
     const message = [
       "*Jasmine Enterprises*",
+      "----------------------",
       `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Total Bags:* ${totalBags || 0}`,
-      `*Total Balance:* ${currentBalance || 0}`,
+      `*Total Bags:* _${totalBags || 0}_`,
+      `*Total Balance:* _${currentBalance || 0}_`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
       "*For any query, please contact 6006034726.*",
