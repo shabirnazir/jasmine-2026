@@ -110,9 +110,12 @@ const ViewCustomer = () => {
       `Monthly_Report_${moment().format("DD_MM_YYYY")}.pdf`,
     );
     document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    try {
+      link.click();
+    } finally {
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    }
   };
   return (
     <div className={css.root}>

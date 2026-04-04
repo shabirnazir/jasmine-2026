@@ -104,6 +104,21 @@
   width: 100%;
 }
 
+.dateInput {
+  min-height: 44px;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.dateInput::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
   .root {
     padding: 2rem;

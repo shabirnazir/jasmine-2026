@@ -151,6 +151,7 @@ const Payment = (props) => {
           <label className={css.label}>date</label>
           <input
             {...register("date", { required: true })}
+            className={css.dateInput}
             placeholder="Enter Amount"
             type="date"
           />

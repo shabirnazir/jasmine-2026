@@ -132,6 +132,21 @@
   width: 100%;
 }
 
+.dateInput {
+  min-height: 44px;
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.dateInput::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
 .dataContainer {
   margin-top: 1.25rem;
 }
@@ -149,6 +164,18 @@
   font-size: 1.1rem;
   font-weight: 700;
   color: #0f172a;
+}
+
+.tableNote {
+  margin: 0 0 0.8rem;
+  color: #475569;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.typePaid {
+  color: #b91c1c;
+  font-weight: 700;
 }
 
 .tableContainer {
@@ -227,6 +254,10 @@
   grid-template-columns: 1fr;
   gap: 1rem;
   width: 100%;
+}
+
+.viewContainer > * {
+  min-width: 0;
 }
 
 .buttonContainer {
@@ -756,6 +787,83 @@
   white-space: nowrap;
 }
 
+.desktopTable {
+  display: block;
+}
+
+.mobileCards {
+  display: none;
+}
+
+.tableCard {
+  border: 1px solid #dbe5ef;
+  border-radius: 0.85rem;
+  background: #ffffff;
+  padding: 0.75rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.tableCardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.tableCardRow:last-child {
+  border-bottom: none;
+}
+
+.tableCardLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.tableCardValue {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+}
+
+.pagination {
+  margin-top: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.paginationInfo {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.paginationButton {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.paginationButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.paginationButton:not(:disabled):hover {
+  background: #f1f5f9;
+}
+
 @media (min-width: 768px) {
   .root {
     padding: 2rem;
@@ -771,5 +879,32 @@
 
   .viewContainer {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .desktopTable {
+    display: none;
+  }
+
+  .mobileCards {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .pagination {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .buttonContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttonContainer > .button,
+  .buttonContainer > .monthButton {
+    width: 100%;
+    flex: none;
   }
 }

@@ -178,6 +178,7 @@ const PurchaseCement = (props) => {
             <label className={css.label}>Date</label>
             <input
               {...register("date", { required: true })}
+              className={css.dateInput}
               placeholder="Enter Date"
               type="date"
             />
