@@ -89,10 +89,13 @@ const SaleCement = (props) => {
 
   const getFormattedAmount = (value) => Number(value || 0).toLocaleString();
 
+  const getBagLabel = (value) => {
+    const bagCount = Number(value || 0);
+    return `${getFormattedAmount(bagCount)} bag${bagCount === 1 ? "" : "s"}`;
+  };
+
   const buildWhatsAppMessage = ({
-    customerName,
     transactionTypeValue,
-    transactionLabel,
     cementLabel,
     price,
     bags,
@@ -105,10 +108,9 @@ const SaleCement = (props) => {
       return [
         "*Jasmine Enterprises*",
         `*Date:* ${date}`,
-        `*Customer:* ${customerName}`,
-        `*Entry Type:* ${transactionLabel}`,
+        `A discount of ${getFormattedAmount(amount)} has been applied to your account.`,
         `*Discount Amount:* ${getFormattedAmount(amount)}`,
-        `*Current Balance:* ${getFormattedAmount(balance)}`,
+        `*Total Balance:* ${getFormattedAmount(balance)}`,
         "Thank you for shopping with us.",
         "This is an automatically generated message.",
         "*For any query, please contact 6006034726.*",
@@ -116,18 +118,23 @@ const SaleCement = (props) => {
     }
 
     const total = Number(price || 0) * Number(bags || 0) + Number(fair || 0);
+    const actionLine =
+      transactionTypeValue === "return"
+        ? `You have returned ${getBagLabel(bags)} of ${cementLabel}.`
+        : `You have purchased ${getBagLabel(bags)} of ${cementLabel}.`;
+    const totalLabel =
+      transactionTypeValue === "return" ? "*Return Amount:*" : "*Total:*";
 
     return [
       "*Jasmine Enterprises*",
       `*Date:* ${date}`,
-      `*Customer:* ${customerName}`,
-      `*Entry Type:* ${transactionLabel}`,
+      actionLine,
       `*Cement:* ${cementLabel}`,
       `*Bags:* ${getFormattedAmount(bags)}`,
       `*Price:* ${getFormattedAmount(price)}`,
       `*Fare:* ${getFormattedAmount(fair)}`,
-      `*Total:* ${getFormattedAmount(total)}`,
-      `*Current Balance:* ${getFormattedAmount(balance)}`,
+      `${totalLabel} ${getFormattedAmount(total)}`,
+      `*Total Balance:* ${getFormattedAmount(balance)}`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
       "*For any query, please contact 6006034726.*",
@@ -179,7 +186,6 @@ const SaleCement = (props) => {
     setLoading(true);
     setError("");
     setMessage("");
-    const customerName = `${selectedDistributor.data.firstName} ${selectedDistributor.data.lastName}`;
     const customerPhone = selectedDistributor.data.phone;
 
     try {
@@ -207,9 +213,7 @@ const SaleCement = (props) => {
       if (res.ok) {
         if (sendWhatsApp) {
           const nextWhatsAppMessage = buildWhatsAppMessage({
-            customerName,
             transactionTypeValue: transactionType.value,
-            transactionLabel: transactionType.label,
             cementLabel:
               transactionType.value === "discount"
                 ? "-"
@@ -402,7 +406,7 @@ const SaleCement = (props) => {
           <div className={css.modalCard}>
             <h3 className={css.modalTitle}>Send WhatsApp</h3>
             <p className={css.modalText}>
-              Sale saved successfully. Review the number and send the message.
+              Entry saved successfully. Review the number and send the message.
             </p>
             <div className={css.modalField}>
               <label className={css.modalLabel}>WhatsApp Number</label>

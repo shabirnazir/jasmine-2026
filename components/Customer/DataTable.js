@@ -126,9 +126,8 @@ const DataTable = (props) => {
     const message = [
       "*Jasmine Enterprises*",
       `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Customer:* ${name}`,
       `*Total Bags:* ${totalBags || 0}`,
-      `*Current Balance:* ${currentBalance || 0}`,
+      `*Total Balance:* ${currentBalance || 0}`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
       "*For any query, please contact 6006034726.*",
@@ -141,9 +140,8 @@ const DataTable = (props) => {
     const message = [
       "*Jasmine Enterprises*",
       `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Customer:* ${name}`,
       `*Total Bags:* ${totalBags || 0}`,
-      `*Current Balance:* ${currentBalance || 0}`,
+      `*Total Balance:* ${currentBalance || 0}`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
       "*For any query, please contact 6006034726.*",
