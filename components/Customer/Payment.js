@@ -117,14 +117,17 @@ const Payment = (props) => {
         const customerName = `${distributor.data.firstName} ${distributor.data.lastName}`;
         const nextWhatsAppMessage = [
           "*Jasmine Enterprises*",
-          `*Date:* ${data.date}`,
-          `*Customer:* ${customerName}`,
-          "*Entry Type:* Payment",
-          `*Paid Amount:* ${getFormattedAmount(data.amount)}`,
-          `*Current Balance:* ${getFormattedAmount(json.balance || 0)}`,
-          "Thank you for shopping with us.",
-          "This is an automatically generated message.",
-          "*For any query, please contact 6006034726.*",
+          "----------------------",
+          `*Date:* _${formattedDate(data.date)}_`,
+          `We have received your payment successfully.`,
+          "-----------------------",
+          `*Paid Amount:* _${getFormattedAmount(data.amount)}_`,
+          "-----------------------",
+          `*Total Balance:* _${getFormattedAmount(json.balance || 0)}_`,
+          "----------------------",
+          "_We sincerely appreciate your prompt payment._",
+          "_This is an automatically generated message._",
+          "*For any queries, please contact:* _6006034726_",
         ].join("\n");
 
         setWhatsAppMessage(nextWhatsAppMessage);
