@@ -154,7 +154,7 @@ const Payment = (props) => {
           `➖ *Paid Amount:* _${getFormattedAmount(data.amount)}_`,
           balanceMessage,
           "━━━━━━━━━━━━━━━",
-          "🛍️ _Thank you for your payment. We truly value your business!_",
+          "🛍️ _Thank you for your payment._",
           "🤖 _This is an automatically generated message._",
           "",
           "📞 *Support:* _6006034726_",

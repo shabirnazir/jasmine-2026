@@ -10,6 +10,7 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   // instead of wrapping our Component inside <StricMode/> we set this to true.
   reactStrictMode: true,
+  turbopack: {},
 };
 
 module.exports = withPWA(nextConfig);
