@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { usePWA } from '@/app/PWAProvider';
-import { useState } from 'react';
-import styles from './InstallButton.module.css';
+import { usePWA } from "@/app/PWAProvider";
+import { useState } from "react";
+import styles from "./InstallButton.module.css";
 
 export default function InstallButton() {
   const { isInstallable, isInstalled, installApp } = usePWA();
@@ -43,9 +43,7 @@ export default function InstallButton() {
       </button>
 
       {showToast && (
-        <div className={styles.toast}>
-          App installation started!
-        </div>
+        <div className={styles.toast}>App installation started!</div>
       )}
     </>
   );
