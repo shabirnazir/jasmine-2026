@@ -157,7 +157,12 @@ export const generatePdf = async (data) => {
 
   filteredData.forEach((item, index) => {
     if (y < HEADER_BAND + ROW_H) addNewPage();
-    addRow([index + 1, item.label, item.balance || "0"], index);
+    const customerName =
+      `${item?.data?.firstName || ""} ${item?.data?.lastName || ""}`.trim() ||
+      item?.label ||
+      "-";
+
+    addRow([index + 1, customerName, item.balance || "0"], index);
   });
 
   // summary footer

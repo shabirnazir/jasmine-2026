@@ -6,7 +6,7 @@ const PAGE_W = 595;
 const PAGE_H = 842;
 const MARGIN = 36;
 const USABLE_W = PAGE_W - MARGIN * 2;
-const BASE_COL_W = [62, 48, 45, 45, 58, 58, 82, 72]; // Date Type Bags Fare Paid Price GrossTotal Balance
+const BASE_COL_W = [58, 72, 42, 42, 54, 54, 76, 68]; // Date Type Bags Fare Paid Price GrossTotal Balance
 const baseTotalWidth = BASE_COL_W.reduce((sum, width) => sum + width, 0);
 const scaledWidths = BASE_COL_W.map((width) =>
   Math.floor((width / baseTotalWidth) * USABLE_W),
@@ -39,6 +39,10 @@ export const generatePdf = async (data, distributor, year) => {
   const pdfDoc = await PDFDocument.create();
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const customerName =
+    `${distributor?.data?.firstName || ""} ${distributor?.data?.lastName || ""}`.trim() ||
+    distributor?.label?.trim() ||
+    "N/A";
 
   let page = pdfDoc.addPage([PAGE_W, PAGE_H]);
   let y = PAGE_H - MARGIN;
@@ -74,7 +78,7 @@ export const generatePdf = async (data, distributor, year) => {
     // --- info section ---
     if (distributor) {
       const infoItems = [
-        ["Customer", distributor.label?.trim()],
+        ["Customer", customerName],
         ["Phone", distributor.data?.phone || "N/A"],
         ["Address", distributor.data?.address || "N/A"],
         [
@@ -224,6 +228,10 @@ export const generatePdf = async (data, distributor, year) => {
 
   // --- total summary ---
   if (data.length) {
+    const totalBags = data.reduce(
+      (sum, item) => sum + (Number(item?.bags) || 0),
+      0,
+    );
     y -= 8;
     page.drawLine({
       start: { x: MARGIN, y },
@@ -232,6 +240,21 @@ export const generatePdf = async (data, distributor, year) => {
       color: navy,
     });
     y -= 14;
+    page.drawText("Total Bags:", {
+      x: MARGIN,
+      y,
+      size: 11,
+      font: bold,
+      color: navy,
+    });
+    page.drawText(String(totalBags), {
+      x: PAGE_W - MARGIN - 60,
+      y,
+      size: 11,
+      font: bold,
+      color: dark,
+    });
+    y -= 16;
     const lastBalance = data[data.length - 1].balance;
     page.drawText("Total Balance:", {
       x: MARGIN,
