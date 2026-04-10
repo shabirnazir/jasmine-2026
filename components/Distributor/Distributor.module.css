@@ -1,8 +1,8 @@
 .root {
   width: 100%;
   min-height: calc(100vh - 70px);
-  padding: 1.5rem 1rem 2.5rem;
-  background: linear-gradient(180deg, #f7fbff 0%, #eef2ff 100%);
+  /* padding: 1.5rem 1rem 2.5rem; */
+  /* background: linear-gradient(180deg, #f7fbff 0%, #eef2ff 100%); */
 }
 
 .heading {
@@ -136,10 +136,10 @@
 .dataContainer {
   margin-top: 0.75rem;
   padding: 0.8rem;
-  border: 1px solid #dbe5ef;
-  border-radius: 0.95rem;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
-  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+  /* border: 1px solid #dbe5ef; */
+  /* border-radius: 0.95rem; */
+  /* background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%); */
+  /* box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06); */
 }
 
 .distributorInfo {
