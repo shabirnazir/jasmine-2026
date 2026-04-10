@@ -60,7 +60,10 @@ const DataTable = (props) => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${name}.pdf`);
+    link.setAttribute(
+      "download",
+      `${name}_${moment().format("DD-MM-YYYY")}.pdf`,
+    );
     document.body.appendChild(link);
     try {
       link.click();
@@ -495,22 +498,20 @@ const DataTable = (props) => {
               Date range is optional. Leave empty to download full report.
             </p>
             <div className={css.modalField}>
-              <label className={css.modalLabel}>Optional Date Range</label>
+              <label className={css.modalLabel}>Date</label>
               <DatePicker
-                selectsRange
-                startDate={pdfStartDate}
-                endDate={pdfEndDate}
-                onChange={(update) => {
-                  const [start, end] = update;
-                  setPdfStartDate(start);
-                  setPdfEndDate(end);
+                selected={pdfStartDate}
+                onChange={(date) => {
+                  setPdfStartDate(date);
+                  setPdfEndDate(date ? new Date() : null);
                 }}
                 isClearable
-                placeholderText="Select date range"
+                placeholderText="Select start date"
                 wrapperClassName={css.datePickerWrapper}
                 className={`${css.dateInput} ${css.datePickerInput}`}
                 dateFormat="dd MMM yyyy"
                 showPopperArrow={false}
+                maxDate={new Date()}
               />
             </div>
             <div className={css.modalActions}>

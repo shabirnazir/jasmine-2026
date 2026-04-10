@@ -128,7 +128,7 @@ export const generatePdf = async (
         ["Phone", distributor.data?.phone || "N/A"],
         ["Address", distributor.data?.address || "N/A"],
         [
-          "Range",
+          "Date",
           dateRange?.fromDate && dateRange?.toDate
             ? `${moment(dateRange.fromDate).format("DD MMM YYYY")} - ${moment(
                 dateRange.toDate,
@@ -209,9 +209,9 @@ export const generatePdf = async (
       "Date",
       "Type",
       `Bags(${downloadedBags})`,
-      "Fare",
-      "Paid",
       "Price",
+      "Paid",
+      "Fare",
       "Gross Total",
       "Balance",
     ];
@@ -273,9 +273,9 @@ export const generatePdf = async (
       moment(item.date).format("DD/MM/YY"),
       item.type || "-",
       item.bags || "-",
-      item.fair || "-",
-      item.paid || "-",
       item.price || "-",
+      item.paid || "-",
+      item.fair || "-",
       grossTotal,
       item.balance || "-",
     ];
@@ -296,21 +296,6 @@ export const generatePdf = async (
       color: navy,
     });
     y -= 14;
-    page.drawText("Total number of bags:", {
-      x: MARGIN,
-      y,
-      size: 11,
-      font: bold,
-      color: navy,
-    });
-    page.drawText(String(overallTotalBags), {
-      x: PAGE_W - MARGIN - 60,
-      y,
-      size: 11,
-      font: bold,
-      color: dark,
-    });
-    y -= 16;
     const lastBalance = data[data.length - 1].balance;
     page.drawText("Total Balance:", {
       x: MARGIN,

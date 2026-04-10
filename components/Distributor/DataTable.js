@@ -19,7 +19,10 @@ const DataTable = (props) => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `${name}.pdf`);
+    link.setAttribute(
+      "download",
+      `${name}_${moment().format("DD-MM-YYYY")}.pdf`,
+    );
     document.body.appendChild(link);
     try {
       link.click();

@@ -71,12 +71,47 @@ export const generatePdf = async (data, distributor, year) => {
     y = PAGE_H - 80;
 
     if (distributor) {
-      const infoLeft = [
-        ["Distributor", distributor.label?.trim()],
+      const cardTopY = PAGE_H - 86;
+      const cardHeight = 74;
+      const cardBottomY = cardTopY - cardHeight;
+
+      // card background
+      page.drawRectangle({
+        x: MARGIN,
+        y: cardBottomY,
+        width: USABLE_W,
+        height: cardHeight,
+        color: rgb(0.97, 0.98, 1),
+        borderColor: rgb(0.83, 0.9, 0.97),
+        borderWidth: 0.8,
+      });
+
+      // card header bar
+      page.drawRectangle({
+        x: MARGIN,
+        y: cardTopY - 16,
+        width: USABLE_W,
+        height: 16,
+        color: rgb(0.9, 0.95, 1),
+      });
+
+      page.drawText("DISTRIBUTOR DETAILS", {
+        x: MARGIN + 8,
+        y: cardTopY - 12,
+        size: 8,
+        font: bold,
+        color: navy,
+      });
+
+      const infoItems = [
+        [
+          "Name",
+          (distributor.label?.trim() || "N/A")
+            .replace(/\s*\(.*?\)\s*$/, "")
+            .trim() || "N/A",
+        ],
         ["Phone", distributor.data?.phone || "N/A"],
         ["Address", distributor.data?.address || "N/A"],
-      ];
-      const infoRight = [
         [
           "Year",
           Array.isArray(year)
@@ -86,50 +121,52 @@ export const generatePdf = async (data, distributor, year) => {
         ["Generated", moment().format("DD MMM YYYY")],
       ];
 
-      infoLeft.forEach(([label, value]) => {
-        page.drawText(`${label}:`, {
-          x: MARGIN,
-          y,
-          size: 9,
-          font: bold,
-          color: midGray,
-        });
-        page.drawText(String(value ?? "-"), {
-          x: MARGIN + 70,
-          y,
-          size: 9,
-          font: regular,
-          color: dark,
-        });
-        y -= 14;
-      });
-      infoRight.forEach(([label, value], i) => {
-        const ry = PAGE_H - 80 - i * 14;
-        page.drawText(`${label}:`, {
-          x: PAGE_W / 2,
-          y: ry,
-          size: 9,
-          font: bold,
-          color: midGray,
-        });
-        page.drawText(String(value ?? "-"), {
-          x: PAGE_W / 2 + 70,
-          y: ry,
-          size: 9,
-          font: regular,
-          color: dark,
-        });
-      });
-    }
+      const leftItems = infoItems.slice(0, 3);
+      const rightItems = infoItems.slice(3);
+      const leftX = MARGIN + 10;
+      const rightX = PAGE_W / 2 + 10;
+      const valueOffset = 52;
+      const detailStartY = cardTopY - 32;
+      const detailRowGap = 16;
 
-    y -= 4;
-    page.drawLine({
-      start: { x: MARGIN, y },
-      end: { x: PAGE_W - MARGIN, y },
-      thickness: 0.5,
-      color: rgb(0.8, 0.87, 0.94),
-    });
-    y -= 6;
+      leftItems.forEach(([label, value], i) => {
+        const rowY = detailStartY - i * detailRowGap;
+        page.drawText(`${label}:`, {
+          x: leftX,
+          y: rowY,
+          size: 9,
+          font: bold,
+          color: midGray,
+        });
+        page.drawText(String(value ?? "-"), {
+          x: leftX + valueOffset,
+          y: rowY,
+          size: 9,
+          font: regular,
+          color: dark,
+        });
+      });
+
+      rightItems.forEach(([label, value], i) => {
+        const rowY = detailStartY - i * detailRowGap;
+        page.drawText(`${label}:`, {
+          x: rightX,
+          y: rowY,
+          size: 9,
+          font: bold,
+          color: midGray,
+        });
+        page.drawText(String(value ?? "-"), {
+          x: rightX + valueOffset,
+          y: rowY,
+          size: 9,
+          font: regular,
+          color: dark,
+        });
+      });
+
+      y = cardBottomY - 6;
+    }
 
     // table header
     page.drawRectangle({
