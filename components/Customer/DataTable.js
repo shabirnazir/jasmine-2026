@@ -4,20 +4,57 @@ import css from "./Customer.module.css";
 import moment from "moment";
 import { generatePdf } from "./GeneratePdf";
 import { useSession } from "next-auth/react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const DataTable = (props) => {
-  const { data = [], distributor, year, totalBags, customer = false } = props;
+  const {
+    data = [],
+    distributor,
+    year,
+    dateRange,
+    totalBags,
+    customer = false,
+  } = props;
   const name = distributor?.data?.firstName + " " + distributor?.data?.lastName;
   const PAGE_SIZE = 10;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState("");
   const [whatsAppError, setWhatsAppError] = useState("");
+  const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
+  const [pdfStartDate, setPdfStartDate] = useState(null);
+  const [pdfEndDate, setPdfEndDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "admin";
 
-  const downloadPdfFile = async () => {
-    const pdfBytes = await generatePdf(oldestFirstData, distributor, year);
+  const downloadPdfFile = async (selectedRange) => {
+    const activeRange =
+      selectedRange?.fromDate && selectedRange?.toDate ? selectedRange : null;
+
+    const pdfData = activeRange
+      ? oldestFirstData.filter((entry) => {
+          const entryTime = new Date(entry?.date || 0).getTime();
+          const fromTime = new Date(activeRange.fromDate).setHours(0, 0, 0, 0);
+          const toTime = new Date(activeRange.toDate).setHours(23, 59, 59, 999);
+          return entryTime >= fromTime && entryTime <= toTime;
+        })
+      : oldestFirstData;
+
+    const downloadedTotalBags = pdfData.reduce(
+      (sum, item) => sum + (Number(item?.bags) || 0),
+      0,
+    );
+    const overallTotalBags = Number(totalBags || 0);
+
+    const pdfBytes = await generatePdf(
+      pdfData,
+      distributor,
+      year,
+      activeRange,
+      downloadedTotalBags,
+      overallTotalBags,
+    );
 
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
     const url = window.URL.createObjectURL(blob);
@@ -31,6 +68,34 @@ const DataTable = (props) => {
       link.remove();
       window.URL.revokeObjectURL(url);
     }
+  };
+
+  const openPdfModal = () => {
+    if (dateRange?.fromDate && dateRange?.toDate) {
+      setPdfStartDate(new Date(dateRange.fromDate));
+      setPdfEndDate(new Date(dateRange.toDate));
+    } else {
+      setPdfStartDate(null);
+      setPdfEndDate(null);
+    }
+    setIsPdfModalOpen(true);
+  };
+
+  const closePdfModal = () => {
+    setIsPdfModalOpen(false);
+  };
+
+  const handleConfirmPdfDownload = async () => {
+    const selectedRange =
+      pdfStartDate && pdfEndDate
+        ? {
+            fromDate: moment(pdfStartDate).format("YYYY-MM-DD"),
+            toDate: moment(pdfEndDate).format("YYYY-MM-DD"),
+          }
+        : null;
+
+    await downloadPdfFile(selectedRange);
+    closePdfModal();
   };
   const openShareModal = () => {
     setWhatsAppNumber(
@@ -76,7 +141,6 @@ const DataTable = (props) => {
   const selectedYears = Array.isArray(year)
     ? year.map((item) => item.label || item.value).join(", ")
     : "All";
-
   const oldestFirstData = useMemo(
     () =>
       [...data].sort(
@@ -178,7 +242,7 @@ const DataTable = (props) => {
       "📊 *Account Summary*",
       "_Here is a quick overview of your account:_",
       "━━━━━━━━━━━━━━━",
-      `📦 *Total Bags:* *${totalBags || 0}*`,
+      `📦 *Total number of bags:* *${totalBags || 0}*`,
       `💰 *Current Balance:* *₹${currentBalance || 0}*`,
       "━━━━━━━━━━━━━━━",
       "✨ _Thank you for shopping with us!_",
@@ -194,7 +258,7 @@ const DataTable = (props) => {
     const message = [
       "*Jasmine Enterprises*",
       `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Total Bags:* ${totalBags || 0}`,
+      `*Total number of bags:* ${totalBags || 0}`,
       `*Total Balance:* ${currentBalance || 0}`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
@@ -392,7 +456,7 @@ const DataTable = (props) => {
             </span>
           </div>
           <div className={`${css.statCard} ${css.statCardInfo}`}>
-            <span className={css.statLabel}>Total Bags</span>
+            <span className={css.statLabel}>Total number of bags</span>
             <span className={css.statValue}>{Number(totalBags || 0)}</span>
           </div>
         </div>
@@ -418,11 +482,66 @@ const DataTable = (props) => {
         <button
           type="button"
           className={css.downloadButton}
-          onClick={() => downloadPdfFile()}
+          onClick={openPdfModal}
         >
           ⬇ Download PDF
         </button>
       </div>
+      {isPdfModalOpen ? (
+        <div className={css.modalOverlay}>
+          <div className={css.modalCard}>
+            <h3 className={css.modalTitle}>Download Customer PDF</h3>
+            <p className={css.modalText}>
+              Date range is optional. Leave empty to download full report.
+            </p>
+            <div className={css.modalField}>
+              <label className={css.modalLabel}>Optional Date Range</label>
+              <DatePicker
+                selectsRange
+                startDate={pdfStartDate}
+                endDate={pdfEndDate}
+                onChange={(update) => {
+                  const [start, end] = update;
+                  setPdfStartDate(start);
+                  setPdfEndDate(end);
+                }}
+                isClearable
+                placeholderText="Select date range"
+                wrapperClassName={css.datePickerWrapper}
+                className={`${css.dateInput} ${css.datePickerInput}`}
+                dateFormat="dd MMM yyyy"
+                showPopperArrow={false}
+              />
+            </div>
+            <div className={css.modalActions}>
+              <button
+                type="button"
+                className={css.modalCancel}
+                onClick={closePdfModal}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={css.modalSecondary}
+                onClick={() => {
+                  setPdfStartDate(null);
+                  setPdfEndDate(null);
+                }}
+              >
+                Clear Range
+              </button>
+              <button
+                type="button"
+                className={css.modalShare}
+                onClick={handleConfirmPdfDownload}
+              >
+                Download
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {isAdmin && isShareModalOpen ? (
         <div className={css.modalOverlay}>
           <div className={css.modalCard}>

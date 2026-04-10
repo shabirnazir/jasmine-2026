@@ -36,7 +36,14 @@ const colX = COL_W.reduce(
   [MARGIN],
 );
 
-export const generatePdf = async (data, distributor, year) => {
+export const generatePdf = async (
+  data,
+  distributor,
+  year,
+  dateRange,
+  downloadedBagsFromUi,
+  overallTotalBagsFromUi,
+) => {
   const pdfDoc = await PDFDocument.create();
   const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const regular = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -44,6 +51,14 @@ export const generatePdf = async (data, distributor, year) => {
     `${distributor?.data?.firstName || ""} ${distributor?.data?.lastName || ""}`.trim() ||
     distributor?.label?.trim() ||
     "N/A";
+  const downloadedBags =
+    typeof downloadedBagsFromUi === "number"
+      ? downloadedBagsFromUi
+      : data.reduce((sum, item) => sum + (Number(item?.bags) || 0), 0);
+  const overallTotalBags =
+    typeof overallTotalBagsFromUi === "number"
+      ? overallTotalBagsFromUi
+      : data.reduce((sum, item) => sum + (Number(item?.bags) || 0), 0);
 
   let page = pdfDoc.addPage([PAGE_W, PAGE_H]);
   let y = PAGE_H - MARGIN;
@@ -113,10 +128,14 @@ export const generatePdf = async (data, distributor, year) => {
         ["Phone", distributor.data?.phone || "N/A"],
         ["Address", distributor.data?.address || "N/A"],
         [
-          "Year",
-          Array.isArray(year)
-            ? year.map((y) => y.label || y.value).join(", ")
-            : year?.label || year?.value || "All",
+          "Range",
+          dateRange?.fromDate && dateRange?.toDate
+            ? `${moment(dateRange.fromDate).format("DD MMM YYYY")} - ${moment(
+                dateRange.toDate,
+              ).format("DD MMM YYYY")}`
+            : Array.isArray(year)
+              ? year.map((y) => y.label || y.value).join(", ")
+              : year?.label || year?.value || "All",
         ],
         ["Generated", moment().format("DD MMM YYYY")],
       ];
@@ -189,7 +208,7 @@ export const generatePdf = async (data, distributor, year) => {
     const headers = [
       "Date",
       "Type",
-      "Bags",
+      `Bags(${downloadedBags})`,
       "Fare",
       "Paid",
       "Price",
@@ -269,10 +288,6 @@ export const generatePdf = async (data, distributor, year) => {
       addNewPage();
     }
 
-    const totalBags = data.reduce(
-      (sum, item) => sum + (Number(item?.bags) || 0),
-      0,
-    );
     y -= 8;
     page.drawLine({
       start: { x: MARGIN, y },
@@ -281,14 +296,14 @@ export const generatePdf = async (data, distributor, year) => {
       color: navy,
     });
     y -= 14;
-    page.drawText("Total Bags:", {
+    page.drawText("Total number of bags:", {
       x: MARGIN,
       y,
       size: 11,
       font: bold,
       color: navy,
     });
-    page.drawText(String(totalBags), {
+    page.drawText(String(overallTotalBags), {
       x: PAGE_W - MARGIN - 60,
       y,
       size: 11,

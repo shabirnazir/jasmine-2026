@@ -13,12 +13,49 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url);
     const customer = searchParams.get("id");
-    const years = searchParams?.get("year");
-    const year = JSON.parse(years)?.map((year) => year.value);
+    const years = searchParams.get("year");
+    const fromDate = searchParams.get("fromDate");
+    const toDate = searchParams.get("toDate");
+
+    const selectedYears = years
+      ? JSON.parse(years)?.map((entry) => String(entry.value))
+      : [];
+
+    const query = { customer };
+
+    if (selectedYears?.length) {
+      query.year = { $in: selectedYears };
+    }
+
+    if (fromDate || toDate) {
+      query.date = {};
+
+      if (fromDate) {
+        const startDate = new Date(fromDate);
+        startDate.setHours(0, 0, 0, 0);
+        query.date.$gte = startDate;
+      }
+
+      if (toDate) {
+        const endDate = new Date(toDate);
+        endDate.setHours(23, 59, 59, 999);
+        query.date.$lte = endDate;
+      }
+    }
+
+    if (query.date && query.date.$gte && query.date.$lte) {
+      if (query.date.$gte > query.date.$lte) {
+        return NextResponse.json(
+          { message: "Invalid date range." },
+          { status: 400 },
+        );
+      }
+    }
+
     await connectMongoDB();
-    //fetch total number of bags of current customer
+
     const totalBags = await Record.aggregate([
-      { $match: { customer: customer } },
+      { $match: query },
       {
         $group: {
           _id: "$customer",
@@ -26,8 +63,8 @@ export async function GET(req) {
         },
       },
     ]);
-    //year as multiple 2021,2022
-    const record = await Record.find({ customer, year });
+
+    const record = await Record.find(query).sort({ date: 1, createdAt: 1 });
     return NextResponse.json({
       data: record,
       bags: totalBags[0]?.totalBags || 0,

@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import css from "./Purchase.module.css";
 import IconSpinner from "../IconSpinner/IconSpinner";
 const PurchaseCement = (props) => {
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -52,6 +55,14 @@ const PurchaseCement = (props) => {
       setLoading(false);
     })();
   }, []);
+
+  const formatDateValue = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const onSubmit = async (data) => {
     setLoading(true);
     setError("");
@@ -176,11 +187,24 @@ const PurchaseCement = (props) => {
         </div> */}
           <div className={css.container}>
             <label className={css.label}>Date</label>
-            <input
-              {...register("date", { required: true })}
-              className={css.dateInput}
-              placeholder="Enter Date"
-              type="date"
+            <Controller
+              name="date"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <DatePicker
+                  selected={field.value ? new Date(field.value) : null}
+                  onChange={(selectedDate) =>
+                    field.onChange(
+                      selectedDate ? formatDateValue(selectedDate) : "",
+                    )
+                  }
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText="Select Date"
+                  className={css.dateInput}
+                  wrapperClassName={css.datePickerWrapper}
+                />
+              )}
             />
             {errors.date && <p className={css.error}>Date is required</p>}
           </div>

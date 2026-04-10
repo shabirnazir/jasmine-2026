@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 import css from "./Customer.module.css";
-import Link from "next/link";
 import DataTable from "./DataTable";
 import IconSpinner from "../IconSpinner/IconSpinner";
 import { generatePdf } from "./GenerateMonthPdf";
@@ -90,9 +89,12 @@ const ViewCustomer = () => {
       (async () => {
         setLoading(true);
         const years = JSON.stringify(year);
-        const res = await fetch(
-          `/api/record?id=${selectedDistributor.value}&year=${years}`,
-        );
+        const query = new URLSearchParams({
+          id: selectedDistributor.value,
+          year: years,
+        });
+
+        const res = await fetch(`/api/record?${query.toString()}`);
         const json = await res.json();
         setDistributors(json.data);
         setTotalBags(json.bags);

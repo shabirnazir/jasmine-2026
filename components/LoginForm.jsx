@@ -51,7 +51,7 @@ export default function LoginForm() {
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-300">
             Jasmine Enterprise
           </p>
-          <h1 className="mt-3 text-3xl font-extrabold leading-tight md:text-4xl">
+          <h1 className="mt-3 text-3xl font-extrabold leading-tight text-white md:text-4xl">
             Smarter store operations in one flow
           </h1>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-300 md:text-base">

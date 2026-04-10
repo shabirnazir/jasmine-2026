@@ -240,6 +240,10 @@
   line-height: 1.4;
 }
 
+.datePickerWrapper {
+  width: 100%;
+}
+
 .dateInput::-webkit-date-and-time-value {
   text-align: left;
 }

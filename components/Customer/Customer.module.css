@@ -347,6 +347,54 @@
   width: 100%;
 }
 
+.pdfRangeField {
+  border: 1px solid #dbe5ef;
+  border-radius: 0.75rem;
+  background: #f8fbff;
+  padding: 0.62rem;
+}
+
+.pdfRangeLabel {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0c4a6e;
+}
+
+.pdfRangeHint {
+  margin: 0.35rem 0 0;
+  font-size: 0.74rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.datePickerInput {
+  width: 100%;
+  background: #ffffff;
+}
+
+.datePickerWrapper {
+  display: block;
+  width: 100%;
+}
+
+.datePickerInput::placeholder {
+  color: #94a3b8;
+}
+
+.datePickerInput:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
+}
+
+.dateRangeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
 .viewContainer > * {
   min-width: 0;
 }
@@ -605,6 +653,23 @@
   .table th,
   .table td {
     word-break: break-word;
+  }
+
+  .dateRangeGrid {
+    grid-template-columns: 1fr;
+    gap: 0.42rem;
+  }
+
+  .pdfRangeField {
+    padding: 0.5rem;
+  }
+
+  .pdfRangeLabel {
+    font-size: 0.72rem;
+  }
+
+  .pdfRangeHint {
+    font-size: 0.68rem;
   }
 }
 
