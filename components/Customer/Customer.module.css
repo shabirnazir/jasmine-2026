@@ -479,7 +479,7 @@
 
 @media (max-width: 480px) {
   .dataContainer {
-    padding: 0.55rem;
+    padding: 0.45rem;
     border-radius: 0.8rem;
   }
 
@@ -494,6 +494,8 @@
   .distributorInfo {
     flex-direction: column;
     gap: 0.35rem;
+    margin-bottom: 0.25rem;
+    padding-bottom: 0.35rem;
   }
 
   .statsGroup {
@@ -517,7 +519,75 @@
   }
 
   .tableContainer {
-    max-height: 400px;
+    max-height: 365px;
+  }
+
+  .tableNote {
+    font-size: 0.68rem;
+    padding: 0.14rem 0.42rem;
+    margin-bottom: 0.22rem;
+  }
+
+  .summaryMeta {
+    gap: 0.25rem;
+    margin: 0 0 0.35rem;
+  }
+
+  .summaryChip {
+    font-size: 0.68rem;
+    padding: 0.14rem 0.42rem;
+  }
+
+  .mobileCards {
+    gap: 0.45rem;
+  }
+
+  .tableCard {
+    padding: 0.45rem;
+    border-left-width: 2px;
+  }
+
+  .tableCardRow {
+    gap: 0.45rem;
+    padding: 0.2rem 0;
+  }
+
+  .tableCardLabel,
+  .tableCardValue {
+    font-size: 0.7rem;
+  }
+
+  .tableCardValue {
+    max-width: 56%;
+    word-break: break-word;
+  }
+
+  .actionButtons {
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .printButton,
+  .downloadButton {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.76rem;
+  }
+
+  .pagination {
+    margin-top: 0.35rem;
+    gap: 0.25rem;
+    justify-content: flex-start;
+  }
+
+  .paginationInfo {
+    font-size: 0.7rem;
+    padding: 0.16rem 0.4rem;
+  }
+
+  .paginationButton {
+    min-width: 0;
+    padding: 0.24rem 0.38rem;
+    font-size: 0.68rem;
   }
 
   .table th,
@@ -535,6 +605,40 @@
   .table th,
   .table td {
     word-break: break-word;
+  }
+}
+
+@media (max-width: 360px) {
+  .dataContainer {
+    padding: 0.38rem;
+  }
+
+  .statCard {
+    padding: 0.24rem 0.34rem;
+  }
+
+  .statLabel {
+    font-size: 0.58rem;
+  }
+
+  .statValue {
+    font-size: 0.78rem;
+  }
+
+  .tableCardLabel,
+  .tableCardValue {
+    font-size: 0.66rem;
+  }
+
+  .printButton,
+  .downloadButton {
+    font-size: 0.72rem;
+    padding: 0.46rem 0.6rem;
+  }
+
+  .paginationButton {
+    padding: 0.22rem 0.32rem;
+    font-size: 0.64rem;
   }
 }
 
@@ -986,6 +1090,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .paginationInfo {
@@ -1001,14 +1108,23 @@
 
 .paginationButton {
   border: 1px solid #bfdbfe;
-  border-radius: 0.6rem;
+  border-radius: 9999px;
   background: #f8fbff;
   color: #0f172a;
   font-size: 0.78rem;
   font-weight: 700;
   padding: 0.35rem 0.62rem;
-  min-width: 72px;
+  min-width: 0;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.paginationEllipsis {
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 16px;
+  text-align: center;
 }
 
 .paginationButton:disabled {
@@ -1018,6 +1134,13 @@
 
 .paginationButton:not(:disabled):hover {
   background: #e0f2fe;
+}
+
+.paginationButtonActive,
+.paginationButtonActive:not(:disabled):hover {
+  background: #0ea5e9;
+  color: #ffffff;
+  border-color: #0284c7;
 }
 
 @media (min-width: 768px) {
@@ -1055,8 +1178,8 @@
   }
 
   .pagination {
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
   }
 
   .buttonContainer {

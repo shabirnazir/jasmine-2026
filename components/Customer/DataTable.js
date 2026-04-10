@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import css from "./Customer.module.css";
 import moment from "moment";
 import { generatePdf } from "./GeneratePdf";
+import { useSession } from "next-auth/react";
 
 const DataTable = (props) => {
   const { data = [], distributor, year, totalBags, customer = false } = props;
@@ -12,6 +13,8 @@ const DataTable = (props) => {
   const [whatsAppNumber, setWhatsAppNumber] = useState("");
   const [whatsAppError, setWhatsAppError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
 
   const downloadPdfFile = async () => {
     const pdfBytes = await generatePdf(oldestFirstData, distributor, year);
@@ -93,6 +96,37 @@ const DataTable = (props) => {
     : 0;
 
   const totalPages = Math.max(1, Math.ceil(latestFirstData.length / PAGE_SIZE));
+  const visiblePages = useMemo(() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
+    }
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, "ellipsis", totalPages];
+    }
+
+    if (currentPage >= totalPages - 3) {
+      return [
+        1,
+        "ellipsis",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [
+      1,
+      "ellipsis",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "ellipsis-right",
+      totalPages,
+    ];
+  }, [currentPage, totalPages]);
+
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const paginatedData = useMemo(
     () => latestFirstData.slice(startIndex, startIndex + PAGE_SIZE),
@@ -299,11 +333,33 @@ const DataTable = (props) => {
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
         >
-          Previous
+          Prev
         </button>
-        <span className={css.paginationInfo}>
-          Page {currentPage} of {totalPages}
-        </span>
+        {visiblePages.map((item, index) => {
+          if (typeof item !== "number") {
+            return (
+              <span key={`${item}-${index}`} className={css.paginationEllipsis}>
+                ...
+              </span>
+            );
+          }
+
+          const isActive = currentPage === item;
+
+          return (
+            <button
+              key={item}
+              type="button"
+              className={`${css.paginationButton} ${
+                isActive ? css.paginationButtonActive : ""
+              }`}
+              onClick={() => setCurrentPage(item)}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item}
+            </button>
+          );
+        })}
         <button
           type="button"
           className={css.paginationButton}
@@ -350,13 +406,15 @@ const DataTable = (props) => {
       </div>
       {customerData}
       <div className={css.actionButtons}>
-        <button
-          type="button"
-          className={css.printButton}
-          onClick={openShareModal}
-        >
-          Send WhatsApp
-        </button>
+        {isAdmin ? (
+          <button
+            type="button"
+            className={css.printButton}
+            onClick={openShareModal}
+          >
+            Send WhatsApp
+          </button>
+        ) : null}
         <button
           type="button"
           className={css.downloadButton}
@@ -365,7 +423,7 @@ const DataTable = (props) => {
           ⬇ Download PDF
         </button>
       </div>
-      {isShareModalOpen ? (
+      {isAdmin && isShareModalOpen ? (
         <div className={css.modalOverlay}>
           <div className={css.modalCard}>
             <h3 className={css.modalTitle}>Send WhatsApp</h3>

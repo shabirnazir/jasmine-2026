@@ -92,6 +92,37 @@ const DataTable = (props) => {
     : 0;
 
   const totalPages = Math.max(1, Math.ceil(latestFirstData.length / PAGE_SIZE));
+  const visiblePages = useMemo(() => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, index) => index + 1);
+    }
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, "ellipsis", totalPages];
+    }
+
+    if (currentPage >= totalPages - 3) {
+      return [
+        1,
+        "ellipsis",
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages,
+      ];
+    }
+
+    return [
+      1,
+      "ellipsis",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "ellipsis-right",
+      totalPages,
+    ];
+  }, [currentPage, totalPages]);
+
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const paginatedData = useMemo(
     () => latestFirstData.slice(startIndex, startIndex + PAGE_SIZE),
@@ -247,7 +278,15 @@ const DataTable = (props) => {
             </div>
             <div className={css.tableCardRow}>
               <span className={css.tableCardLabel}>Balance</span>
-              <span className={css.tableCardValue}>{item.balance}</span>
+              <span
+                className={`${css.tableCardValue} ${
+                  Number(item.balance || 0) < 0
+                    ? css.balanceNegativeText
+                    : css.balancePositiveText
+                }`}
+              >
+                {item.balance}
+              </span>
             </div>
           </article>
         ))}
@@ -259,11 +298,33 @@ const DataTable = (props) => {
           disabled={currentPage === 1}
           onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
         >
-          Previous
+          Prev
         </button>
-        <span className={css.paginationInfo}>
-          Page {currentPage} of {totalPages}
-        </span>
+        {visiblePages.map((item, index) => {
+          if (typeof item !== "number") {
+            return (
+              <span key={`${item}-${index}`} className={css.paginationEllipsis}>
+                ...
+              </span>
+            );
+          }
+
+          const isActive = currentPage === item;
+
+          return (
+            <button
+              key={item}
+              type="button"
+              className={`${css.paginationButton} ${
+                isActive ? css.paginationButtonActive : ""
+              }`}
+              onClick={() => setCurrentPage(item)}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item}
+            </button>
+          );
+        })}
         <button
           type="button"
           className={css.paginationButton}
@@ -281,11 +342,28 @@ const DataTable = (props) => {
     <div className={css.dataContainer}>
       <div className={css.distributorInfo}>
         <p className={css.distributorName}>{name || "Selected Distributor"}</p>
-        <p className={css.number}>
-          Balance: {Number(currentBalance || 0).toLocaleString()}
-        </p>
+        <div className={css.statsGroup}>
+          <div
+            className={`${css.statCard} ${
+              Number(currentBalance || 0) < 0
+                ? css.statCardDanger
+                : css.statCardSuccess
+            }`}
+          >
+            <span className={css.statLabel}>Balance</span>
+            <span className={css.statValue}>
+              {Number(currentBalance || 0).toLocaleString()}
+            </span>
+          </div>
+        </div>
       </div>
       <p className={css.tableNote}>Note: Entries are shown newest first.</p>
+      <div className={css.summaryMeta}>
+        <span className={css.summaryChip}>Years: {selectedYears}</span>
+        <span className={css.summaryChip}>
+          Entries: {latestFirstData.length}
+        </span>
+      </div>
       {tableData}
       <div className={css.actionButtons}>
         <button

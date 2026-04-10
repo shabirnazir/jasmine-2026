@@ -18,6 +18,7 @@ const COL_W = scaledWidths.map((width, index) =>
 );
 const ROW_H = 22;
 const HEADER_BAND = 110; // min y before new page
+const SUMMARY_SPACE = 72;
 
 const navy = rgb(0.05, 0.27, 0.49);
 const skyBlue = rgb(0.22, 0.64, 0.9);
@@ -75,10 +76,40 @@ export const generatePdf = async (data, distributor, year) => {
 
     y = PAGE_H - 80;
 
-    // --- info section ---
+    // --- customer details card ---
     if (distributor) {
+      const cardTopY = PAGE_H - 86;
+      const cardHeight = 74;
+      const cardBottomY = cardTopY - cardHeight;
+
+      page.drawRectangle({
+        x: MARGIN,
+        y: cardBottomY,
+        width: USABLE_W,
+        height: cardHeight,
+        color: rgb(0.97, 0.98, 1),
+        borderColor: rgb(0.83, 0.9, 0.97),
+        borderWidth: 0.8,
+      });
+
+      page.drawRectangle({
+        x: MARGIN,
+        y: cardTopY - 16,
+        width: USABLE_W,
+        height: 16,
+        color: rgb(0.9, 0.95, 1),
+      });
+
+      page.drawText("CUSTOMER DETAILS", {
+        x: MARGIN + 8,
+        y: cardTopY - 12,
+        size: 8,
+        font: bold,
+        color: navy,
+      });
+
       const infoItems = [
-        ["Customer", customerName],
+        ["Name", customerName],
         ["Phone", distributor.data?.phone || "N/A"],
         ["Address", distributor.data?.address || "N/A"],
         [
@@ -92,43 +123,49 @@ export const generatePdf = async (data, distributor, year) => {
 
       const leftItems = infoItems.slice(0, 3);
       const rightItems = infoItems.slice(3);
+      const leftX = MARGIN + 10;
+      const rightX = PAGE_W / 2 + 10;
+      const valueOffset = 52;
+      const detailStartY = cardTopY - 32;
+      const detailRowGap = 16;
 
-      leftItems.forEach(([label, value]) => {
+      leftItems.forEach(([label, value], i) => {
+        const rowY = detailStartY - i * detailRowGap;
         page.drawText(`${label}:`, {
-          x: MARGIN,
-          y,
+          x: leftX,
+          y: rowY,
           size: 9,
           font: bold,
           color: midGray,
         });
         page.drawText(String(value ?? "-"), {
-          x: MARGIN + 62,
-          y,
+          x: leftX + valueOffset,
+          y: rowY,
           size: 9,
           font: regular,
           color: dark,
         });
-        y -= 14;
       });
 
-      const rightStartY = PAGE_H - 80;
       rightItems.forEach(([label, value], i) => {
-        const ry = rightStartY - i * 14;
+        const rowY = detailStartY - i * detailRowGap;
         page.drawText(`${label}:`, {
-          x: PAGE_W / 2,
-          y: ry,
+          x: rightX,
+          y: rowY,
           size: 9,
           font: bold,
           color: midGray,
         });
         page.drawText(String(value ?? "-"), {
-          x: PAGE_W / 2 + 62,
-          y: ry,
+          x: rightX + valueOffset,
+          y: rowY,
           size: 9,
           font: regular,
           color: dark,
         });
       });
+
+      y = cardBottomY - 10;
     }
 
     // separator line
@@ -228,6 +265,10 @@ export const generatePdf = async (data, distributor, year) => {
 
   // --- total summary ---
   if (data.length) {
+    if (y < SUMMARY_SPACE) {
+      addNewPage();
+    }
+
     const totalBags = data.reduce(
       (sum, item) => sum + (Number(item?.bags) || 0),
       0,
