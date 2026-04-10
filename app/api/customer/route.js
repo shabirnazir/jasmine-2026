@@ -3,9 +3,16 @@ import Cement from "@/models/cement";
 import Customer from "@/models/customer";
 import Record from "@/models/record";
 import { NextResponse } from "next/server";
+import {
+  requireAdminSession,
+  requireAuthenticatedSession,
+} from "@/lib/accessControl";
 
 export async function DELETE(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     await connectMongoDB();
@@ -25,6 +32,9 @@ export async function DELETE(req) {
 }
 export async function GET(req) {
   try {
+    const { response } = await requireAuthenticatedSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
     await connectMongoDB();
@@ -48,6 +58,9 @@ export async function GET(req) {
 }
 export async function POST(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { firstName, lastName, mobileNumber, address } = await req.json();
     // await connectMongoDB();
     await Customer.create({
@@ -71,6 +84,9 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const { firstName, lastName, mobileNumber, address } = await req.json();

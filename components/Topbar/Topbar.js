@@ -6,10 +6,13 @@ import { FaHome, FaChevronDown } from "react-icons/fa";
 import { IoIosContact } from "react-icons/io";
 import { BiSolidPurchaseTag } from "react-icons/bi";
 import { GiTakeMyMoney } from "react-icons/gi";
+import { useSession } from "next-auth/react";
 
 const Topbar = (props) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMobileSection, setOpenMobileSection] = useState(null);
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "admin";
 
   const toggleMobileSection = (sectionId) => {
     setOpenMobileSection(openMobileSection === sectionId ? null : sectionId);
@@ -26,10 +29,10 @@ const Topbar = (props) => {
       icon: <IoIosContact size={20} />,
       label: "Distributor",
       items: [
-        { label: "Add Distributor", href: "/distributor/add" },
+        { label: "Add Distributor", href: "/distributor/add", adminOnly: true },
         { label: "View Journal", href: "/distributor/viewdistributor" },
-        { label: "Payment", href: "/distributor/payment" },
-        { label: "Distributors", href: "/distributor/delete" },
+        { label: "Payment", href: "/distributor/payment", adminOnly: true },
+        { label: "Distributors", href: "/distributor/delete", adminOnly: true },
       ],
     },
     {
@@ -37,25 +40,34 @@ const Topbar = (props) => {
       icon: <IoIosContact size={20} />,
       label: "Customer",
       items: [
-        { label: "Add Customer", href: "/customer/add" },
+        { label: "Add Customer", href: "/customer/add", adminOnly: true },
         { label: "View Journal", href: "/customer/viewCustomer" },
-        { label: "Payment", href: "/customer/payment" },
-        { label: "Customers", href: "/customer/delete" },
+        { label: "Payment", href: "/customer/payment", adminOnly: true },
+        { label: "Customers", href: "/customer/delete", adminOnly: true },
       ],
     },
     {
       id: "purchase",
       icon: <BiSolidPurchaseTag size={20} />,
       label: "Purchase",
-      items: [{ label: "Purchase", href: "/purchase" }],
+      items: [{ label: "Purchase", href: "/purchase", adminOnly: true }],
     },
     {
       id: "sale",
       icon: <GiTakeMyMoney size={20} />,
       label: "Sale",
-      items: [{ label: "Cement", href: "/customer/saleCement" }],
+      items: [
+        { label: "Cement", href: "/customer/saleCement", adminOnly: true },
+      ],
     },
   ];
+
+  const visibleMenuItems = menuItems
+    .map((menu) => ({
+      ...menu,
+      items: menu.items.filter((item) => !item.adminOnly || isAdmin),
+    }))
+    .filter((menu) => menu.items.length > 0);
 
   return (
     <nav className="bg-white shadow-md border-b border-gray-200">
@@ -78,7 +90,7 @@ const Topbar = (props) => {
               <span className="font-medium">Home</span>
             </Link>
 
-            {menuItems.map((menu) => (
+            {visibleMenuItems.map((menu) => (
               <div key={menu.id} className="relative group">
                 <button className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200">
                   {menu.icon}
@@ -103,6 +115,15 @@ const Topbar = (props) => {
                 </div>
               </div>
             ))}
+
+            {isAdmin ? (
+              <Link
+                href="/register"
+                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200"
+              >
+                <span className="font-medium">Create Employee</span>
+              </Link>
+            ) : null}
           </div>
 
           {/* Mobile Menu Button */}
@@ -143,7 +164,7 @@ const Topbar = (props) => {
             <FaHome size={18} />
             <span className="font-medium">Home</span>
           </Link>
-          {menuItems.map((menu) => (
+          {visibleMenuItems.map((menu) => (
             <div key={menu.id}>
               <button
                 onClick={() => toggleMobileSection(menu.id)}
@@ -176,6 +197,16 @@ const Topbar = (props) => {
               )}
             </div>
           ))}
+
+          {isAdmin ? (
+            <Link
+              href="/register"
+              onClick={closeMobileMenu}
+              className="block px-4 py-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-150 mx-2"
+            >
+              Create Employee
+            </Link>
+          ) : null}
         </div>
       )}
     </nav>

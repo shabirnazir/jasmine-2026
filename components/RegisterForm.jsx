@@ -21,13 +21,22 @@ export default function RegisterForm() {
     }
 
     try {
-      const resUserExists = await fetch("api/userExists", {
+      const resUserExists = await fetch("/api/userExists", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
+
+      if (!resUserExists.ok) {
+        if (resUserExists.status === 403) {
+          setError("Only admins can create employee accounts.");
+          return;
+        }
+        setError("Unable to verify user right now.");
+        return;
+      }
 
       const { user } = await resUserExists.json();
 
@@ -36,7 +45,7 @@ export default function RegisterForm() {
         return;
       }
 
-      const res = await fetch("api/register", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,9 +60,10 @@ export default function RegisterForm() {
       if (res.ok) {
         const form = e.target;
         form.reset();
-        router.push("/");
+        router.push("/dashboard");
       } else {
-        console.log("User registration failed.");
+        const payload = await res.json().catch(() => ({}));
+        setError(payload?.message || "User registration failed.");
       }
     } catch (error) {
       console.log("Error during registration: ", error);

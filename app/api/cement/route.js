@@ -2,9 +2,16 @@ import { connectMongoDB } from "@/lib/mongodb";
 import Cement from "@/models/cement";
 import Stock from "@/models/cementStock";
 import { NextResponse } from "next/server";
+import {
+  requireAdminSession,
+  requireAuthenticatedSession,
+} from "@/lib/accessControl";
 
 export async function GET(req) {
   try {
+    const { response } = await requireAuthenticatedSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const distributor = searchParams.get("id");
     // const year = searchParams?.get("year");
@@ -17,12 +24,15 @@ export async function GET(req) {
     console.log("Error fetching cement:", error);
     return NextResponse.json(
       { message: "An error occurred while fetching the cement." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 export async function POST(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { type, distributor, price, chalan, date } = await req.json();
     await connectMongoDB();
     const lastEnter = await Cement.findOne({ distributor }).sort({
@@ -58,13 +68,13 @@ export async function POST(req) {
 
     return NextResponse.json(
       { message: "Data added Successfully" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.log("Error adding cement:", error);
     return NextResponse.json(
       { message: "An error occurred while adding the cement." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,9 +2,13 @@ import { connectMongoDB } from "@/lib/mongodb";
 import Record from "@/models/record";
 import Cement from "@/models/cement";
 import { NextResponse } from "next/server";
+import { requireAuthenticatedSession } from "@/lib/accessControl";
 
 export async function GET(req) {
   try {
+    const { response } = await requireAuthenticatedSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const customerId = searchParams.get("customerId");
 

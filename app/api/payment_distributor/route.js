@@ -1,8 +1,12 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Cement from "@/models/cement";
 import { NextResponse } from "next/server";
+import { requireAdminSession } from "@/lib/accessControl";
 export async function POST(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { type, distributor, amount, date, detail } = await req.json();
     await connectMongoDB();
     const lastEnter = await Cement.findOne({
@@ -25,13 +29,13 @@ export async function POST(req) {
     });
     return NextResponse.json(
       { message: "Payment Successfull" },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.log("Error fetching cement:", error);
     return NextResponse.json(
       { message: "An error occurred while fetching the cement." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

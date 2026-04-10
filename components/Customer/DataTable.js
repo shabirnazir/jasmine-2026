@@ -279,7 +279,15 @@ const DataTable = (props) => {
             </div>
             <div className={css.tableCardRow}>
               <span className={css.tableCardLabel}>Balance</span>
-              <span className={css.tableCardValue}>{item.balance}</span>
+              <span
+                className={`${css.tableCardValue} ${
+                  Number(item.balance || 0) < 0
+                    ? css.balanceNegativeText
+                    : css.balancePositiveText
+                }`}
+              >
+                {item.balance}
+              </span>
             </div>
           </article>
         ))}
@@ -314,11 +322,32 @@ const DataTable = (props) => {
     <div className={css.dataContainer}>
       <div className={css.distributorInfo}>
         <p className={css.distributorName}>{name || "Selected Customer"}</p>
-        <p className={css.number}>
-          Balance: {Number(currentBalance || 0).toLocaleString()}
-        </p>
+        <div className={css.statsGroup}>
+          <div
+            className={`${css.statCard} ${
+              Number(currentBalance || 0) < 0
+                ? css.statCardDanger
+                : css.statCardSuccess
+            }`}
+          >
+            <span className={css.statLabel}>Balance</span>
+            <span className={css.statValue}>
+              {Number(currentBalance || 0).toLocaleString()}
+            </span>
+          </div>
+          <div className={`${css.statCard} ${css.statCardInfo}`}>
+            <span className={css.statLabel}>Total Bags</span>
+            <span className={css.statValue}>{Number(totalBags || 0)}</span>
+          </div>
+        </div>
       </div>
       <p className={css.tableNote}>Note: Entries are shown newest first.</p>
+      <div className={css.summaryMeta}>
+        <span className={css.summaryChip}>Years: {selectedYears}</span>
+        <span className={css.summaryChip}>
+          Entries: {latestFirstData.length}
+        </span>
+      </div>
       {customerData}
       <div className={css.actionButtons}>
         <button

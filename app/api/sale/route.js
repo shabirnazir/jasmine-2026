@@ -1,8 +1,12 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Record from "@/models/record";
 import { NextResponse } from "next/server";
+import { requireAdminSession } from "@/lib/accessControl";
 export async function POST(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { type, customer, amount, date } = await req.json();
     await connectMongoDB();
     const lastEnter = await Record.findOne({

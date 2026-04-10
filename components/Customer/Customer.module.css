@@ -154,7 +154,12 @@
 }
 
 .dataContainer {
-  margin-top: 1.25rem;
+  margin-top: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid #dbe5ef;
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
 }
 
 .distributorInfo {
@@ -162,21 +167,100 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.statsGroup {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0.45rem;
 }
 
 .distributorName,
 .number {
-  font-size: 1.1rem;
+  font-size: 1.02rem;
   font-weight: 700;
   color: #0f172a;
 }
 
-.tableNote {
-  margin: 0 0 0.8rem;
+.statCard {
+  min-width: 120px;
+  padding: 0.38rem 0.6rem;
+  border-radius: 0.72rem;
+  border: 1px solid transparent;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+}
+
+.statCardSuccess {
+  background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+  border-color: #86efac;
+}
+
+.statCardDanger {
+  background: linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%);
+  border-color: #fda4af;
+}
+
+.statCardInfo {
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-color: #7dd3fc;
+}
+
+.statLabel {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: #475569;
-  font-size: 0.86rem;
-  font-weight: 600;
+}
+
+.statValue {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.tableNote {
+  margin: 0 0 0.3rem;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.summaryMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+}
+
+.summaryChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.52rem;
+  border-radius: 9999px;
+  border: 1px solid #dbe5ef;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .typePaid {
@@ -187,11 +271,12 @@
 .tableContainer {
   width: 100%;
   overflow-x: auto;
-  border: 1px solid #dbe5ef;
+  border: 1px solid #d6e2ee;
   border-radius: 0.85rem;
   max-height: 520px;
   overflow-y: auto;
   background: #ffffff;
+  box-shadow: inset 0 1px 0 #f8fafc;
 }
 
 @media (max-width: 768px) {
@@ -301,8 +386,17 @@
   }
 
   .distributorInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.65rem;
     width: 100%;
     margin-bottom: 1rem;
+  }
+
+  .statsGroup {
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 
   .distributorName {
@@ -337,6 +431,15 @@
 
   .distributorName {
     font-size: 1.1rem !important;
+  }
+
+  .statCard {
+    min-width: 108px;
+    padding: 0.32rem 0.5rem;
+  }
+
+  .statValue {
+    font-size: 0.9rem;
   }
 
   .table {
@@ -375,12 +478,42 @@
 }
 
 @media (max-width: 480px) {
+  .dataContainer {
+    padding: 0.55rem;
+    border-radius: 0.8rem;
+  }
+
   .deleteContainer {
     padding: 0 0.3rem;
   }
 
   .distributorName {
     font-size: 1rem !important;
+  }
+
+  .distributorInfo {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .statsGroup {
+    width: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0.3rem;
+  }
+
+  .statCard {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .statLabel {
+    font-size: 0.62rem;
+  }
+
+  .statValue {
+    font-size: 0.84rem;
   }
 
   .tableContainer {
@@ -708,8 +841,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 0.75rem;
-  margin-top: 1.1rem;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
 }
 
 .printButton {
@@ -718,12 +851,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.6rem 1rem;
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(14, 165, 233, 0.22);
@@ -743,12 +876,12 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 0.65rem 1.25rem;
+  padding: 0.6rem 1rem;
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
   font-weight: 700;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.22);
@@ -804,18 +937,19 @@
 
 .tableCard {
   border: 1px solid #dbe5ef;
-  border-radius: 0.85rem;
+  border-left: 3px solid #38bdf8;
+  border-radius: 0.75rem;
   background: #ffffff;
-  padding: 0.75rem;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  padding: 0.62rem;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
 }
 
 .tableCardRow {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.8rem;
-  padding: 0.35rem 0;
+  gap: 0.65rem;
+  padding: 0.28rem 0;
   border-bottom: 1px dashed #e2e8f0;
 }
 
@@ -824,41 +958,56 @@
 }
 
 .tableCardLabel {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #475569;
 }
 
 .tableCardValue {
-  font-size: 0.83rem;
+  font-size: 0.79rem;
   font-weight: 600;
   color: #0f172a;
   text-align: right;
 }
 
+.balancePositiveText {
+  color: #166534;
+  font-weight: 700;
+}
+
+.balanceNegativeText {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
 .pagination {
-  margin-top: 0.9rem;
+  margin-top: 0.45rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .paginationInfo {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: #334155;
+  color: #1e293b;
   white-space: nowrap;
+  padding: 0.2rem 0.52rem;
+  border-radius: 9999px;
+  background: #eef2ff;
+  border: 1px solid #dbeafe;
 }
 
 .paginationButton {
-  border: 1px solid #cbd5e1;
+  border: 1px solid #bfdbfe;
   border-radius: 0.6rem;
-  background: #ffffff;
+  background: #f8fbff;
   color: #0f172a;
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 0.45rem 0.75rem;
+  padding: 0.35rem 0.62rem;
+  min-width: 72px;
   cursor: pointer;
 }
 
@@ -868,7 +1017,7 @@
 }
 
 .paginationButton:not(:disabled):hover {
-  background: #f1f5f9;
+  background: #e0f2fe;
 }
 
 @media (min-width: 768px) {
@@ -902,6 +1051,7 @@
 
   .tableCard {
     width: 100%;
+    border-radius: 0.75rem;
   }
 
   .pagination {
@@ -931,6 +1081,6 @@
   }
 
   .printButton {
-    margin-top: 20px;
+    margin-top: 0;
   }
 }

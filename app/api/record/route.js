@@ -1,9 +1,16 @@
 import { connectMongoDB } from "@/lib/mongodb";
 import Record from "@/models/record";
 import { NextResponse } from "next/server";
+import {
+  requireAdminSession,
+  requireAuthenticatedSession,
+} from "@/lib/accessControl";
 
 export async function GET(req) {
   try {
+    const { response } = await requireAuthenticatedSession();
+    if (response) return response;
+
     const { searchParams } = new URL(req.url);
     const customer = searchParams.get("id");
     const years = searchParams?.get("year");
@@ -35,6 +42,9 @@ export async function GET(req) {
 }
 export async function POST(req) {
   try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
     const { type, transactionType, customer, price, fair, bags, amount, date } =
       await req.json();
     await connectMongoDB();
