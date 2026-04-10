@@ -25,8 +25,33 @@ const DataTable = (props) => {
   const [pdfStartDate, setPdfStartDate] = useState(null);
   const [pdfEndDate, setPdfEndDate] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [entries, setEntries] = useState(data);
+  const [bagsTotal, setBagsTotal] = useState(Number(totalBags || 0));
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editError, setEditError] = useState("");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editType, setEditType] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editBags, setEditBags] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [editFair, setEditFair] = useState("");
+  const [editPaid, setEditPaid] = useState("");
+  const [editEntryId, setEditEntryId] = useState("");
+  const [openActionMenuId, setOpenActionMenuId] = useState("");
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteEntryId, setDeleteEntryId] = useState("");
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "admin";
+
+  useEffect(() => {
+    setEntries(data || []);
+  }, [data]);
+
+  useEffect(() => {
+    setBagsTotal(Number(totalBags || 0));
+  }, [totalBags]);
 
   const downloadPdfFile = async (selectedRange) => {
     const activeRange =
@@ -45,7 +70,7 @@ const DataTable = (props) => {
       (sum, item) => sum + (Number(item?.bags) || 0),
       0,
     );
-    const overallTotalBags = Number(totalBags || 0);
+    const overallTotalBags = Number(bagsTotal || 0);
 
     const pdfBytes = await generatePdf(
       pdfData,
@@ -146,11 +171,16 @@ const DataTable = (props) => {
     : "All";
   const oldestFirstData = useMemo(
     () =>
-      [...data].sort(
-        (a, b) =>
-          new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime(),
-      ),
-    [data],
+      [...entries].sort((a, b) => {
+        const byDate =
+          new Date(a?.date || 0).getTime() - new Date(b?.date || 0).getTime();
+        if (byDate !== 0) return byDate;
+        return (
+          new Date(a?.createdAt || 0).getTime() -
+          new Date(b?.createdAt || 0).getTime()
+        );
+      }),
+    [entries],
   );
 
   const latestFirstData = useMemo(
@@ -161,6 +191,12 @@ const DataTable = (props) => {
   const currentBalance = oldestFirstData.length
     ? oldestFirstData[oldestFirstData.length - 1].balance
     : 0;
+  const latestEntryId = latestFirstData?.[0]?._id
+    ? String(latestFirstData[0]._id)
+    : "";
+  const isEditingPaidEntry =
+    Number(editPaid || 0) > 0 ||
+    String(editType || "").toLowerCase() === "paid";
 
   const totalPages = Math.max(1, Math.ceil(latestFirstData.length / PAGE_SIZE));
   const visiblePages = useMemo(() => {
@@ -245,7 +281,7 @@ const DataTable = (props) => {
       "📊 *Account Summary*",
       "_Here is a quick overview of your account:_",
       "━━━━━━━━━━━━━━━",
-      `📦 *Total number of bags:* *${totalBags || 0}*`,
+      `📦 *Total number of bags:* *${bagsTotal || 0}*`,
       `💰 *Current Balance:* *₹${currentBalance || 0}*`,
       "━━━━━━━━━━━━━━━",
       "✨ _Thank you for shopping with us!_",
@@ -261,7 +297,7 @@ const DataTable = (props) => {
     const message = [
       "*Jasmine Enterprises*",
       `*Date:* ${moment().format("DD-MM-YYYY")}`,
-      `*Total number of bags:* ${totalBags || 0}`,
+      `*Total number of bags:* ${bagsTotal || 0}`,
       `*Total Balance:* ${currentBalance || 0}`,
       "Thank you for shopping with us.",
       "This is an automatically generated message.",
@@ -273,6 +309,166 @@ const DataTable = (props) => {
 
     await downloadPdfFile();
   };
+
+  const openEditModal = (entryId = "") => {
+    const latestEntry = latestFirstData[0];
+    if (!latestEntry) return;
+    if (entryId && String(latestEntry._id) !== String(entryId)) return;
+
+    setEditEntryId(String(latestEntry._id || ""));
+    setEditType(String(latestEntry.type || ""));
+    setEditDate(moment(latestEntry.date).format("YYYY-MM-DD"));
+    setEditBags(String(Math.abs(Number(latestEntry.bags || 0))));
+    setEditPrice(String(Number(latestEntry.price || 0)));
+    setEditFair(String(Math.abs(Number(latestEntry.fair || 0))));
+    setEditPaid(String(Number(latestEntry.paid || 0)));
+    setEditError("");
+    setOpenActionMenuId("");
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditError("");
+  };
+
+  const openDeleteModal = (entryId) => {
+    if (!entryId || String(entryId) !== latestEntryId) return;
+    setDeleteEntryId(String(entryId));
+    setDeleteError("");
+    setOpenActionMenuId("");
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteError("");
+    setDeleteEntryId("");
+  };
+
+  const handleSaveLatestEntry = async () => {
+    if (!distributor?.value || !editEntryId) {
+      setEditError("Unable to identify latest entry.");
+      return;
+    }
+
+    if (!editDate) {
+      setEditError("Please select date.");
+      return;
+    }
+
+    if (isEditingPaidEntry) {
+      if (Number(editPaid) <= 0) {
+        setEditError("Please enter a valid paid amount.");
+        return;
+      }
+    } else if (Number(editBags) <= 0 || Number(editPrice) <= 0) {
+      setEditError("Please fill date, bags, and price correctly.");
+      return;
+    }
+
+    setEditLoading(true);
+    setEditError("");
+
+    try {
+      const res = await fetch("/api/record", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: editEntryId,
+          customer: distributor.value,
+          type: editType,
+          date: editDate,
+          bags: Number(editBags),
+          price: Number(editPrice),
+          fair: Number(editFair || 0),
+          paid: Number(editPaid || 0),
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        setEditError(json?.message || "Unable to update latest entry.");
+        return;
+      }
+
+      const updatedEntry = json?.data;
+      if (!updatedEntry?._id) {
+        closeEditModal();
+        return;
+      }
+
+      setEntries((prev) => {
+        const next = prev.map((entry) =>
+          String(entry?._id) === String(updatedEntry._id)
+            ? updatedEntry
+            : entry,
+        );
+        const nextBagsTotal = next.reduce(
+          (sum, entry) => sum + (Number(entry?.bags) || 0),
+          0,
+        );
+        setBagsTotal(nextBagsTotal);
+        return next;
+      });
+
+      closeEditModal();
+    } catch (error) {
+      setEditError("Unable to update latest entry.");
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
+  const handleDeleteLatestEntry = async () => {
+    if (!distributor?.value || !deleteEntryId) {
+      setDeleteError("Unable to identify latest entry.");
+      return;
+    }
+
+    setDeleteLoading(true);
+    setDeleteError("");
+
+    try {
+      const res = await fetch("/api/record", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: deleteEntryId,
+          customer: distributor.value,
+        }),
+      });
+
+      const json = await res.json();
+      if (!res.ok) {
+        setDeleteError(json?.message || "Unable to delete latest entry.");
+        return;
+      }
+
+      setEntries((prev) => {
+        const next = prev.filter(
+          (entry) => String(entry?._id) !== String(deleteEntryId),
+        );
+        const nextBagsTotal = next.reduce(
+          (sum, entry) => sum + (Number(entry?.bags) || 0),
+          0,
+        );
+        setBagsTotal(nextBagsTotal);
+        return next;
+      });
+
+      closeDeleteModal();
+    } catch (error) {
+      setDeleteError("Unable to delete latest entry.");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const customerData = (
     <>
       <div className={`${css.tableContainer} ${css.desktopTable}`}>
@@ -284,13 +480,14 @@ const DataTable = (props) => {
               <th>Type</th>
               <th>
                 Bags
-                <br />({totalBags})
+                <br />({bagsTotal})
               </th>
               <th>Paid</th>
               <th>Price</th>
               <th>Fare</th>
               <th>Gross Total</th>
               <th>Balance</th>
+              {isAdmin ? <th>Action</th> : null}
             </tr>
           </thead>
           <tbody>
@@ -313,6 +510,46 @@ const DataTable = (props) => {
                   {data?.price ? data?.price * data?.bags + data.fair : "-"}
                 </td>
                 <td>{data.balance}</td>
+                {isAdmin ? (
+                  <td className={css.rowActionCell}>
+                    {String(data?._id || "") === latestEntryId ? (
+                      <>
+                        <button
+                          type="button"
+                          className={css.rowMenuButton}
+                          onClick={() =>
+                            setOpenActionMenuId((prev) =>
+                              prev === String(data._id) ? "" : String(data._id),
+                            )
+                          }
+                          aria-label="Row actions"
+                        >
+                          &#8942;
+                        </button>
+                        {openActionMenuId === String(data._id) ? (
+                          <div className={css.rowMenu}>
+                            <button
+                              type="button"
+                              className={css.rowMenuItem}
+                              onClick={() => openEditModal(String(data._id))}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className={`${css.rowMenuItem} ${css.rowMenuDelete}`}
+                              onClick={() => openDeleteModal(String(data._id))}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        ) : null}
+                      </>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                ) : null}
               </tr>
             ))}
           </tbody>
@@ -324,6 +561,40 @@ const DataTable = (props) => {
             className={css.tableCard}
             key={item?._id || `${item?.date}-${index}`}
           >
+            {isAdmin && String(item?._id || "") === latestEntryId ? (
+              <div className={css.mobileActionWrap}>
+                <button
+                  type="button"
+                  className={css.rowMenuButton}
+                  onClick={() =>
+                    setOpenActionMenuId((prev) =>
+                      prev === String(item._id) ? "" : String(item._id),
+                    )
+                  }
+                  aria-label="Row actions"
+                >
+                  &#8942;
+                </button>
+                {openActionMenuId === String(item._id) ? (
+                  <div className={css.mobileRowMenu}>
+                    <button
+                      type="button"
+                      className={css.rowMenuItem}
+                      onClick={() => openEditModal(String(item._id))}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className={`${css.rowMenuItem} ${css.rowMenuDelete}`}
+                      onClick={() => openDeleteModal(String(item._id))}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
             <div className={css.tableCardRow}>
               <span className={css.tableCardLabel}>S No.</span>
               <span className={css.tableCardValue}>
@@ -460,7 +731,7 @@ const DataTable = (props) => {
           </div>
           <div className={`${css.statCard} ${css.statCardInfo}`}>
             <span className={css.statLabel}>Total number of bags</span>
-            <span className={css.statValue}>{Number(totalBags || 0)}</span>
+            <span className={css.statValue}>{Number(bagsTotal || 0)}</span>
           </div>
         </div>
       </div>
@@ -538,6 +809,129 @@ const DataTable = (props) => {
                 onClick={handleConfirmPdfDownload}
               >
                 Download
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {isAdmin && isEditModalOpen ? (
+        <div className={css.modalOverlay}>
+          <div className={css.modalCard}>
+            <h3 className={css.modalTitle}>Edit Latest Journal Entry</h3>
+            <p className={css.modalText}>
+              Only the most recent entry can be edited.
+            </p>
+            <div className={css.modalField}>
+              <label className={css.modalLabel}>Type</label>
+              <input
+                className={css.modalInput}
+                type="text"
+                value={editType}
+                onChange={(event) => setEditType(event.target.value)}
+                placeholder="Type"
+              />
+            </div>
+            <div className={css.modalField}>
+              <label className={css.modalLabel}>Date</label>
+              <input
+                className={css.modalInput}
+                type="date"
+                value={editDate}
+                onChange={(event) => setEditDate(event.target.value)}
+              />
+            </div>
+            {isEditingPaidEntry ? (
+              <div className={css.modalField}>
+                <label className={css.modalLabel}>Paid Amount</label>
+                <input
+                  className={css.modalInput}
+                  type="number"
+                  value={editPaid}
+                  onChange={(event) => setEditPaid(event.target.value)}
+                  min="0"
+                />
+              </div>
+            ) : (
+              <>
+                <div className={css.modalField}>
+                  <label className={css.modalLabel}>Bags</label>
+                  <input
+                    className={css.modalInput}
+                    type="number"
+                    value={editBags}
+                    onChange={(event) => setEditBags(event.target.value)}
+                    min="1"
+                  />
+                </div>
+                <div className={css.modalField}>
+                  <label className={css.modalLabel}>Price</label>
+                  <input
+                    className={css.modalInput}
+                    type="number"
+                    value={editPrice}
+                    onChange={(event) => setEditPrice(event.target.value)}
+                    min="0"
+                  />
+                </div>
+                <div className={css.modalField}>
+                  <label className={css.modalLabel}>Fare</label>
+                  <input
+                    className={css.modalInput}
+                    type="number"
+                    value={editFair}
+                    onChange={(event) => setEditFair(event.target.value)}
+                    min="0"
+                  />
+                </div>
+              </>
+            )}
+            {editError ? <p className={css.error}>{editError}</p> : null}
+            <div className={css.modalActions}>
+              <button
+                type="button"
+                className={css.modalCancel}
+                onClick={closeEditModal}
+                disabled={editLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={css.modalShare}
+                onClick={handleSaveLatestEntry}
+                disabled={editLoading}
+              >
+                {editLoading ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {isAdmin && isDeleteModalOpen ? (
+        <div className={css.modalOverlay}>
+          <div className={css.modalCard}>
+            <h3 className={css.modalTitle}>Delete Latest Journal Entry</h3>
+            <p className={css.modalText}>
+              This will delete only the latest entry. Older entries are not
+              changed.
+            </p>
+            {deleteError ? <p className={css.error}>{deleteError}</p> : null}
+            <div className={css.modalActions}>
+              <button
+                type="button"
+                className={css.modalCancel}
+                onClick={closeDeleteModal}
+                disabled={deleteLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className={css.modalDelete}
+                onClick={handleDeleteLatestEntry}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>

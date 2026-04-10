@@ -327,6 +327,88 @@
   font-size: 0.9rem;
 }
 
+.rowActionCell {
+  position: relative;
+  width: 64px;
+}
+
+.rowMenuButton {
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 0.5rem;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.rowMenuButton:hover {
+  background: #f1f5f9;
+}
+
+.rowMenu {
+  position: absolute;
+  right: 10px;
+  top: calc(100% - 6px);
+  z-index: 5;
+  min-width: 120px;
+  border: 1px solid #dbe5ef;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rowMenuItem {
+  border: none;
+  background: transparent;
+  border-radius: 0.45rem;
+  padding: 0.42rem 0.55rem;
+  text-align: left;
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.rowMenuItem:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.rowMenuDelete:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.mobileActionWrap {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.25rem;
+}
+
+.mobileRowMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 8;
+  min-width: 120px;
+  border: 1px solid #dbe5ef;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .table th {
   background: #eff6ff;
   color: #1e293b;

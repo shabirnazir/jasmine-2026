@@ -168,3 +168,147 @@ export async function POST(req) {
     );
   }
 }
+
+export async function PUT(req) {
+  try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
+    const { id, customer, type, price, fair, bags, paid, date } =
+      await req.json();
+
+    if (!id || !customer) {
+      return NextResponse.json(
+        { message: "Entry id and customer are required." },
+        { status: 400 },
+      );
+    }
+
+    await connectMongoDB();
+
+    const latestEntry = await Record.findOne({ customer }).sort({
+      createdAt: -1,
+    });
+
+    if (!latestEntry || String(latestEntry._id) !== String(id)) {
+      return NextResponse.json(
+        { message: "Only the latest journal entry can be edited." },
+        { status: 400 },
+      );
+    }
+
+    const previousEntry = await Record.findOne({
+      customer,
+      _id: { $ne: latestEntry._id },
+    }).sort({ createdAt: -1 });
+
+    const previousBalance = previousEntry
+      ? Number(previousEntry.balance || 0)
+      : 0;
+    const isPaidEntry = Number(latestEntry.paid || 0) > 0;
+    const isReturnEntry = Number(latestEntry.bags || 0) < 0;
+
+    const priceInNumber = Math.abs(Number(price) || 0);
+    const fairInNumber = Math.abs(Number(fair) || 0);
+    const bagsInNumber = Math.abs(Number(bags) || 0);
+    const paidInNumber = Math.abs(Number(paid) || 0);
+
+    let signedBags = 0;
+    let signedFair = 0;
+    let signedAmount = 0;
+    let paidAmount = 0;
+
+    if (isPaidEntry) {
+      signedBags = 0;
+      signedFair = 0;
+      paidAmount = paidInNumber;
+      signedAmount = -paidAmount;
+    } else {
+      signedBags = isReturnEntry ? -bagsInNumber : bagsInNumber;
+      signedFair = isReturnEntry ? -fairInNumber : fairInNumber;
+      paidAmount = 0;
+      signedAmount = priceInNumber * signedBags + signedFair;
+    }
+
+    const updatedBalance = previousBalance + signedAmount;
+
+    const updatedDate = new Date(date);
+    const monthLabel = updatedDate.toLocaleString("default", {
+      month: "long",
+    });
+    const year = updatedDate.getFullYear();
+
+    const updatedRecord = await Record.findByIdAndUpdate(
+      latestEntry._id,
+      {
+        type: String(type || latestEntry.type || ""),
+        price: isPaidEntry ? 0 : priceInNumber,
+        fair: signedFair,
+        bags: signedBags,
+        paid: paidAmount,
+        date: updatedDate,
+        balance: updatedBalance,
+        month: monthLabel,
+        year,
+      },
+      { new: true },
+    );
+
+    return NextResponse.json(
+      {
+        message: "Latest entry updated successfully",
+        balance: updatedRecord.balance,
+        data: updatedRecord,
+      },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.log("Error updating Record:", error);
+    return NextResponse.json(
+      { message: "An error occurred while updating the Record." },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    const { response } = await requireAdminSession();
+    if (response) return response;
+
+    const { id, customer } = await req.json();
+
+    if (!id || !customer) {
+      return NextResponse.json(
+        { message: "Entry id and customer are required." },
+        { status: 400 },
+      );
+    }
+
+    await connectMongoDB();
+
+    const latestEntry = await Record.findOne({ customer }).sort({
+      createdAt: -1,
+    });
+
+    if (!latestEntry || String(latestEntry._id) !== String(id)) {
+      return NextResponse.json(
+        { message: "Only the latest journal entry can be deleted." },
+        { status: 400 },
+      );
+    }
+
+    await Record.findByIdAndDelete(latestEntry._id);
+
+    return NextResponse.json(
+      { message: "Latest entry deleted successfully" },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.log("Error deleting Record:", error);
+    return NextResponse.json(
+      { message: "An error occurred while deleting the Record." },
+      { status: 500 },
+    );
+  }
+}
